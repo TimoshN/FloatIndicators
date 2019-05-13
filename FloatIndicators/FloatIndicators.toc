@@ -1,0 +1,9 @@
+## Interface: 80000
+## Title: FloatIndicators
+## Author: Alea
+## Version: 130
+## SavedVariables: FIDB
+## SavedVariablesPerCharacter: FICDB
+
+Libs\LibAleaUI-1.0\load.xml
+load.xml

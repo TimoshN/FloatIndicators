@@ -1,0 +1,5 @@
+## Interface: 80000
+## Title: FloatIndicators [|cffffffffAntorus|r]
+## Dependencies: FloatIndicators
+
+modules.xml

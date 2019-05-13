@@ -1,0 +1,3 @@
+local addon, core = ...
+
+core.version = '33'

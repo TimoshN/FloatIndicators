@@ -1,0 +1,6 @@
+## Interface: 80100
+## Title: FloatIndicators [|cffffffffBattleOfDazaralor|r]
+## Dependencies: FloatIndicators
+
+modules.xml
+

@@ -1,0 +1,6 @@
+## Interface: 80000
+## Title: FloatIndicators [|cffffffffUldir|r]
+## Dependencies: FloatIndicators
+
+modules.xml
+

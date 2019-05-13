@@ -1,0 +1,6 @@
+## Interface: 80100
+## Title: FloatIndicators [|cffffffffCrucible Of Storms|r]
+## Dependencies: FloatIndicators
+
+modules.xml
+

@@ -1,0 +1,7 @@
+## Interface: 60000
+## Title: LibAleaUI-1.0
+## Notes: LibAleaUI-1.0
+## Author: Alea
+## Version: 1.0
+
+load.xml

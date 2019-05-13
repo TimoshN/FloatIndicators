@@ -1,0 +1,6 @@
+## Interface: 80000
+## Title: FloatIndicators [|cffffffffTomb of Sargeras|r]
+## Dependencies: FloatIndicators
+
+modules.xml
+

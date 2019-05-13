@@ -1,0 +1,6 @@
+## Interface: 80000
+## Title: FloatIndicators [|cffffffffThe Nighthold|r]
+## Dependencies: FloatIndicators
+
+modules.xml
+

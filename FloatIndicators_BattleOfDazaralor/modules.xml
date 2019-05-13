@@ -1,0 +1,15 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<Script file="core.lua"/>
+<Script file="ChampionofLight.lua"/>
+<Script file="JadefireMasters.lua"/>
+<Script file="Grong.lua"/>
+<Script file="Opulence.lua"/>
+<Script file="ConclaveoftheChosen.lua"/>
+<Script file="Rastakhan.lua"/>
+<Script file="Mekkatorque.lua"/>
+<Script file="StormwallBlockade.lua"/>
+<Script file="Jaina.lua"/>
+
+</Ui>
