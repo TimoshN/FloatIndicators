@@ -78,7 +78,7 @@ ns.AddEncounter(2273,{
 			if eventType == "SPELL_AURA_APPLIED" then 
 				if ( spellID == 285652 ) then
 					if ( OC(285652) ) then
-						ns.SetCircle(dstGUID, 285652, 3, 70, nil, nil, core.Lang.HEAL..'Хил')
+						ns.SetCircle(dstGUID, 285652, 3, 70, nil, nil, '-'..core.Lang.HEAL)
 					end
 				elseif spellID == 293662 or spellID == 293661 or spellID == 293663 then
 					if ( OC('marks') ) then
