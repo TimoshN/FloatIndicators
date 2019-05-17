@@ -50,7 +50,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2268,{
 	Enable = true,
-	Name = "Конклав избранных",
+	Name = core.Lang.BOSS5,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -81,7 +81,7 @@ ns.AddEncounter(2268,{
 			['circle'] = { enable = true, color = 7, desc = 282834, },
 		},
 		['tankCircle'] = {
-			['circle'] = { enable = true, name = "Kimbala", customName = 'Текущий танк', desc = 282592 },
+			['circle'] = { enable = true, name = "Kimbala", customName = ns.Lang.CURRENT_TANK, desc = 282592 },
 		},
 	},
 	Handler = function(self, event, ...)
@@ -90,13 +90,13 @@ ns.AddEncounter(2268,{
             
             if spellID == 286811 and OC(286811) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 286811, 3, {GetTime(), 6},40,nil,nil,'Сфера')
+                    ns.AddSpinner(dstGUID, 286811, 3, {GetTime(), 6},40,nil,nil, core.Lang.SPHERE)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 286811)
                 end
             elseif spellID == 285878 and OC(285878) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 285878, 6, {GetTime(), 30},40,nil,nil,'Диспел')
+                    ns.AddSpinner(dstGUID, 285878, 6, {GetTime(), 30},40,nil,nil,core.Lang.DISPEL)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 285878)
                 end      
@@ -110,7 +110,7 @@ ns.AddEncounter(2268,{
 				]==]				
             elseif spellID == 282079 and OC(282079) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.SetCircle(srcGUID, 282079, 3, 90, nil, nil, 'Разведи')
+                    ns.SetCircle(srcGUID, 282079, 3, 90, nil, nil, '-99%')
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.HideCircle(dstGUID, 282079)
                 end 
@@ -124,9 +124,9 @@ ns.AddEncounter(2268,{
                 end
             elseif spellID == 282135 and OC(282135) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    local runAway = 'Отойди'
+                    local runAway = core.Lang.MOVE_OUT
                     if ( dstGUID == UnitGUID('player') ) then 
-                        runAway = 'Выбеги'
+                        runAway = core.Lang.RUN_AWAY
                     end
 
                     ns.AddSpinner(dstGUID, 282135, 8, {GetTime(), 5},40,nil,nil,runAway)
@@ -135,13 +135,13 @@ ns.AddEncounter(2268,{
                 end
             elseif spellID == 282098 and OC(282098) and not UnitInRaid(dstName) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.SetCircle(dstGUID, 282098, 12, 40, nil, nil, 'Пурж')
+                    ns.SetCircle(dstGUID, 282098, 12, 40, nil, nil, core.Lang.PURGE)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.HideCircle(dstGUID, 282098)
                 end 
 			elseif spellID == 282834 and OC(282834) then
 				if eventType == 'SPELL_AURA_APPLIED' then
-					ns.AddSpinner(dstGUID, 282834, 7, {GetTime(), 3}, 70,nil,nil,'Тигр')
+					ns.AddSpinner(dstGUID, 282834, 7, {GetTime(), 3}, 70,nil,nil, core.Lang.TIGER)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                      ns.RemoveSpinner(dstGUID, 282834)
                 end 

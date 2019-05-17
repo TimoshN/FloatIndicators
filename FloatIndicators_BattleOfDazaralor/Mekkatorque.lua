@@ -60,7 +60,7 @@ local function FindTarget()
 			encounterData.target = true
 			
 			--ns.AddLine(srcGUID, unitGUID, 282153, 8) 
-			ns.SetCircle(unitGUID, 282153, 8, 60, nil, nil, 'Пушка')
+			ns.SetCircle(unitGUID, 282153, 8, 60, nil, nil, core.Lang.GUN)
 			
 			C_Timer.After(1.5, function()
 			--	ns.RemoveLine(srcGUID, unitGUID, 282153) 
@@ -74,7 +74,7 @@ local colorOrder = { 2, 7, 8 }
 
 ns.AddEncounter(2276,{
 	Enable = true,
-	Name = "Главный механик Меггакрут",
+	Name = core.Lang.BOSS7,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -98,7 +98,7 @@ ns.AddEncounter(2276,{
             
             if spellID == 284168 and OC(284168) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.SetCircle(dstGUID, 284168, 6, 60, nil, nil, 'Мини')
+                    ns.SetCircle(dstGUID, 284168, 6, 60, nil, nil, core.Lang.MINI)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.HideCircle(dstGUID, 284168)
                 end
@@ -135,7 +135,7 @@ ns.AddEncounter(2276,{
                 end
             elseif spellID == 287167 and OC(287167) then 
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.SetCircle(dstGUID, 287167, 12, 60, nil, nil, 'Диспел')
+                    ns.SetCircle(dstGUID, 287167, 12, 60, nil, nil, core.Lang.DISPEL)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.HideCircle(dstGUID, 287167)
                 end

@@ -55,7 +55,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2281,{
 	Enable = true,
-	Name = "Леди Джайна Праудмур",
+	Name = core.Lang.BOSS9,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -72,7 +72,7 @@ ns.AddEncounter(2281,{
             ['lines'] =  { enable = true, color = 3, desc = 288038, },
         },
 		['tankCircle'] = {
-			['circle'] = { enable = true, name = "Джайна", customName = 'Текущий танк', desc = 289940 },
+			['circle'] = { enable = true, name = "Джайна", customName = ns.Lang.CURRENT_TANK, desc = 289940 },
 		},
 		[289220] = {
 			['circle'] =  { enable = true, color = 6, desc = 289220, },
@@ -97,16 +97,16 @@ ns.AddEncounter(2281,{
             
             if spellID == 288412 and OC(288412) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 288412, 4, {GetTime(), 8}, 40,nil,nil,'Диспел 2')
+                    ns.AddSpinner(dstGUID, 288412, 4, {GetTime(), 8}, 40,nil,nil, core.Lang.DISPEL..' 2')
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 288412)
                 end 
             elseif spellID == 285254 and OC(285254) then
                 if eventType == 'SPELL_AURA_APPLIED' then
 
-                    local runAway = 'Лавина'
+                    local runAway = core.Lang.AVALANCE
                     if ( dstGUID == UnitGUID('player') ) then 
-						runAway = runAway..'\n|cFFFF0000На тебе|r'
+						runAway = runAway..'\n|cFFFF0000'..core.Lang.ON_YOU ..'|r'
                     end
 
                     ns.AddSpinner(dstGUID, 285254, 3, {GetTime(), 8}, 60,nil,nil, runAway)
@@ -115,9 +115,9 @@ ns.AddEncounter(2281,{
                 end
             elseif spellID == 288212 and OC(288212) then
 				if eventType == 'SPELL_AURA_APPLIED' then
-					local runAway = 'К снаряду'
+					local runAway = core.Lang.TO_BARREL
                     if ( dstGUID == UnitGUID('player') ) then 
-						runAway = runAway..'\n|cFFFF0000На тебе|r'
+						runAway = runAway..'\n|cFFFF0000'..core.Lang.ON_YOU ..'|r'
                     end
 					
                     ns.AddSpinner(dstGUID, 288212, 8, {GetTime(), 6}, 60,nil,nil,runAway)
@@ -126,9 +126,9 @@ ns.AddEncounter(2281,{
 				end
 			elseif spellID == 288374 and OC(288374) then 
 				if eventType == 'SPELL_AURA_APPLIED' then
-					local runAway = 'Залп'
+					local runAway = core.Lang.BLAST
                     if ( dstGUID == UnitGUID('player') ) then 
-						runAway = runAway..'\n|cFFFF0000На тебе|r'
+						runAway = runAway..'\n|cFFFF0000'..core.Lang.ON_YOU ..'|r'
                     end
                     ns.AddSpinner(dstGUID, 288374, 3, {GetTime(), 8}, 70,nil,nil,runAway)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
@@ -138,7 +138,7 @@ ns.AddEncounter(2281,{
 				if eventType == 'SPELL_CAST_START' then
 					C_Timer.After(0.1, function()
 						if IsEncounterInProgress() then
-							ns.SetCircle(UnitGUID('boss2target'), 'heart', 3, 90, nil, nil, '|cFFFF0000>Сердце<\n'..UnitName('boss2target') )	
+							ns.SetCircle(UnitGUID('boss2target'), 'heart', 3, 90, nil, nil, '|cFFFF0000>'..core.Lang.HEARTH..'<\n'..UnitName('boss2target') )	
 						end
 					end)
 					C_Timer.After(2, function()
@@ -149,9 +149,9 @@ ns.AddEncounter(2281,{
 				if eventType == 'SPELL_AURA_APPLIED' then
 					ns.HideCircleByTag('heart') 
 
-					local runAway = 'Сердце'
+					local runAway = core.Lang.HEARTH
                     if ( dstGUID == UnitGUID('player') ) then 
-						runAway = runAway..'\n|cFFFF0000На тебе|r'
+						runAway = runAway..'\n|cFFFF0000'..core.Lang.ON_YOU ..'|r'
 					else
 						runAway = runAway..'\n'..dstName
 					end
@@ -196,7 +196,7 @@ ns.AddEncounter(2281,{
 					local duration =  IsMythic() and 8 or 15
 
 					ns.HideCircle(srcGUID, 288219)
-					ns.AddSpinner(srcGUID, 288221, 3, {GetTime(), duration}, 50,nil,nil,'Взрыв')
+					ns.AddSpinner(srcGUID, 288221, 3, {GetTime(), duration}, 50,nil,nil, core.Lang.EXPLOSION)
 					C_Timer.After(duration, function()
 						ns.RemoveSpinner(srcGUID, 288221)
 					end)

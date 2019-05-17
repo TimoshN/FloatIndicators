@@ -57,7 +57,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(encID,{
 	Enable = true,
-	Name = "Мастера Огня и Нефрита",
+	Name = core.Lang.BOSS3,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -77,7 +77,7 @@ ns.AddEncounter(encID,{
            
             if spellID == 286988 and OC(286988) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID,286988,6,{GetTime(), 10},60,nil,nil,"Диспел")
+                    ns.AddSpinner(dstGUID,286988,6,{GetTime(), 10},60,nil,nil,core.Lang.DISPEL)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID,286988) 
                 end

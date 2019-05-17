@@ -1,8 +1,80 @@
 local addon, core = ...
 local ns = FloatIndicators or FloatIndicatorsDebug
 
+if ( GetLocale() == 'ruRU' ) then
+	core.Lang = {
+		RAID_NAME = 'Дазаралор',
+		BOSS1 = "Чемпион света",
+		BOSS2 = "Гронг",
+		BOSS3 = "Мастера Огня и Нефрита",
+		BOSS4 = "Роскошь",
+		BOSS5 = "Конклав избранных",
+		BOSS6 = "Растахан",
+		BOSS7 = "Главный механик Меггакрут",
+		BOSS8 = "Штормовая блокада",
+		BOSS9 = "Леди Джайна Праудмур",
+	}
+
+	core.Lang.DISPEL = 'Диспел'
+	core.Lang.PURGE = 'Пурж'
+	core.Lang.SPHERE = 'Сфера'
+	core.Lang.RUN = 'Беги'
+	core.Lang.POOL = 'Лужа'
+	core.Lang.SHARE = 'Делить'
+	core.Lang.SWAP = 'Свап'
+	core.Lang.TIGER = 'Тигр'
+	core.Lang.MOVE_OUT  = 'Отойди'
+	core.Lang.RUN_AWAY = 'Выбеги'
+	core.Lang.MINI = 'Мини'
+	core.Lang.GUN = 'Пушка'
+	core.Lang.CLEANING = 'Чистка'
+	core.Lang.ON_YOU = 'На тебе'
+	core.Lang.SEAWEED = 'Водоросли'
+	core.Lang.MC = 'МК'
+	core.Lang.AVALANCE = 'Лавина'
+	core.Lang.TO_BARREL = 'К бочке'
+	core.Lang.BLAST = 'Залп'
+	core.Lang.HEARTH = 'Сердце'
+	core.Lang.EXPLOSION = 'Взрыв'
+else 
+	core.Lang = {
+		RAID_NAME = 'Dazaralor',
+		BOSS1 = "Champions of the Light",
+		BOSS2 = "Grong",
+		BOSS3 = "Jademasters",
+		BOSS4 = "Opulence",
+		BOSS5 = "Conclave of the Chosen",
+		BOSS6 = "Rastakhan",
+		BOSS7 = "Mekkatorque",
+		BOSS8 = "Stormwall Blockade",
+		BOSS9 = "Lady Jaina Proudmoore",
+	}
+
+	core.Lang.DISPEL = 'Dispel'
+	core.Lang.PURGE = 'Purge'
+	core.Lang.SPHERE = 'Sphere'
+	core.Lang.RUN = 'Run'
+	core.Lang.POOL = 'Pool'
+	core.Lang.SHARE = 'Share'
+	core.Lang.SWAP = 'Swap'
+	core.Lang.TIGER = 'Tiger'
+	core.Lang.MOVE_OUT  = 'Move out'
+	core.Lang.RUN_AWAY = 'Run away'
+	core.Lang.MINI = 'Mini'
+	core.Lang.GUN = 'Gun'
+	core.Lang.CLEANING = 'Cleaning'
+	core.Lang.ON_YOU = 'On YOU'
+	core.Lang.SEAWEED = 'Seaweed'
+	core.Lang.MC = 'MC'
+	core.Lang.AVALANCE = 'Avalance'
+	core.Lang.TO_BARREL = 'To barrel'
+	core.Lang.BLAST = 'Blast'
+	core.Lang.HEARTH = 'Hearth'
+	core.Lang.EXPLOSION = 'Explosion'
+end
+
 core.version = '08.05.2019 17:39'
-core.raidName = 'Дазаралор (Т23)'
+core.raidName = core.Lang.RAID_NAME..' (T23)'
 core.raidID = 1176
 core.bossOrder = 0
 --[==[
@@ -26,7 +98,6 @@ core.bossOrder = 0
 	
 
 ]==]
-
 
 local list = {
 	

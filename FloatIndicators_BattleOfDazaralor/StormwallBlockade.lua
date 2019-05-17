@@ -55,7 +55,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2280,{
 	Enable = true,
-	Name = "Штормовая блокада",
+	Name = core.Lang.BOSS8,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -82,9 +82,9 @@ ns.AddEncounter(2280,{
             
            if ( spellID == 285426 or spellID == 285350 ) and OC(285426) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-					local runAway = 'Чистка'
+					local runAway = core.Lang.CLEANING
                     if ( dstGUID == UnitGUID('player') ) then 
-                        runAway = 'Чистка\nНа тебе'
+                        runAway = core.Lang.CLEANING..'\n'..core.Lang.ON_YOU
                     end
 					
                     ns.AddSpinner(dstGUID,285426, 8,{GetTime(), 10 }, 60, nil, nil, runAway)
@@ -93,15 +93,15 @@ ns.AddEncounter(2280,{
                 end
 			elseif spellID == 285000 and OC(285000) then
                 if eventType == 'SPELL_AURA_APPLIED' or eventType == 'SPELL_AURA_APPLIED_DOSE' then
-                    ns.AddSpinner(dstGUID,285000, 17,{GetTime(), 18 }, 60, nil, nil, 'Водоросли')
+                    ns.AddSpinner(dstGUID,285000, 17,{GetTime(), 18 }, 60, nil, nil, core.Lang.SEAWEED)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 285000)
                 end
 			elseif spellID == 284361 and OC(284361) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-					local runAway = 'Лужа'
+					local runAway = core.Lang.POOL
                     if ( dstGUID == UnitGUID('player') ) then 
-                        runAway = 'Лужа\nНа тебе'
+                        runAway = core.Lang.POOL..'\n'..core.Lang.ON_YOU
                     end
 					
                     ns.AddSpinner(dstGUID,284361, 2,{GetTime(), 2.5 }, 60, nil, nil, runAway)
@@ -110,9 +110,9 @@ ns.AddEncounter(2280,{
                 end
 			elseif spellID == 288205 and OC(288205) then
 				if eventType == 'SPELL_AURA_APPLIED' then
-					local runAway = 'Сфера'
+					local runAway = core.Lang.SPHERE
                     if ( dstGUID == UnitGUID('player') ) then 
-                        runAway = 'Сфера\nНа тебе'
+                        runAway = core.Lang.SPHERE..'\n'..core.Lang.ON_YOU
                     end
 					
                     ns.AddSpinner(dstGUID,288205, 3,{GetTime(), 4 }, 60, nil, nil, runAway)
@@ -121,9 +121,9 @@ ns.AddEncounter(2280,{
                 end
 			elseif spellID == 284405 or spellID == 286495 then
 				if eventType == 'SPELL_AURA_APPLIED' then
-					local runAway = 'МК'
+					local runAway = core.Lang.MC
                     if ( dstGUID == UnitGUID('player') ) then 
-                        runAway = 'МК\nНа тебе'
+                        runAway = core.Lang.MC..'\n'..core.Lang.ON_YOU
                     end
 					
 					if ( OC(284405) ) then

@@ -51,7 +51,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2273,{
 	Enable = true,
-	Name = "Глашатай Бездны Уу'нат",
+	Name = core.Lang.BOSS2,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -59,7 +59,7 @@ ns.AddEncounter(2273,{
 			['circle'] = { enable = true, color = 3, desc = 285652, },
 		},
 		['tankCircle'] = { -- Касание погибели
-			['circle'] = { enable = true, name = "УУнат", customName = 'Текущий танк', desc = 284851 },
+			['circle'] = { enable = true, name = "УУнат", customName = ns.Lang.CURRENT_TANK, desc = 284851 },
 		},
 		['marks'] = {
 			['circle'] = { enable = true, color = 3, desc = 293653, },
@@ -78,7 +78,7 @@ ns.AddEncounter(2273,{
 			if eventType == "SPELL_AURA_APPLIED" then 
 				if ( spellID == 285652 ) then
 					if ( OC(285652) ) then
-						ns.SetCircle(dstGUID, 285652, 3, 70, nil, nil, '-Хил')
+						ns.SetCircle(dstGUID, 285652, 3, 70, nil, nil, core.Lang.HEAL..'Хил')
 					end
 				elseif spellID == 293662 or spellID == 293661 or spellID == 293663 then
 					if ( OC('marks') ) then
@@ -101,13 +101,13 @@ ns.AddEncounter(2273,{
 
 						if spellID == 284768 then
 							color = 12
-							text = 'Трезубец'
+							text = core.Lang.TRIDENT
 						elseif spellID == 284684 then 
 							color = 8
-							text = 'Камень'
+							text = core.Lang.STONE
 						elseif spellID == 284569 then 
 							color = 4
-							text = 'Корона'
+							text = core.Lang.CROWN
 						end
 
 						ns.SetCircle(dstGUID, 'marks', color, 90, nil, nil, text)

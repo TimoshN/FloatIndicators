@@ -51,13 +51,13 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2269,{
 	Enable = true,
-	Name = "Неусыпный совет",
+	Name = core.Lang.BOSS1,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" }, --"RAID_BOSS_EMOTE",  
 	Settings = {
 		[282386] = { -- Афотический взрыв МК
 			['circle'] = { enable = false, color = 8, desc = 282386, },
-			['tankCircle'] = { enable = true, name = "Cabal", customName = 'Текущий танк', desc = 282386 },
+			['tankCircle'] = { enable = true, name = "Cabal", customName = ns.Lang.CURRENT_TANK, desc = 282386 },
 		},
 		[282432] = { -- Тяжелые сомнения
 			['circle'] = { enable = true, color = 3, desc = 282432, },
@@ -74,10 +74,10 @@ ns.AddEncounter(2269,{
 				if spellID == 282386 then
 					if OC(spellID) then 
 						
-						local text = 'МК'
+						local text = core.Lang.MC
 
 						if ( dstGUID == UnitGUID('player') ) then
-							text = '|cFFFF0000МК|r'
+							text = '|cFFFF0000'..core.Lang.MC..'|r'
 						end 
 
 						ns.AddSpinner(dstGUID, spellID, 8, { GetTime(), 30 }, 60, nil, nil, text )
@@ -88,10 +88,10 @@ ns.AddEncounter(2269,{
 			if eventType == "SPELL_AURA_APPLIED" then 
 				if spellID == 282432 then
 					if OC(spellID) then 		
-						local text = 'Взрыв'
+						local text = core.Lang.EXPLOSION
 
 						if ( dstGUID == UnitGUID('player') ) then
-							text = '|cFFFF0000Выбеги|r'
+							text = '|cFFFF0000'..core.Lang.RUN_AWAY..'|r'
 						end 
 						
 						local _, _, _, _, duration = ns.GetAuraByName(dstName, spellName, 'HARMFUL')
@@ -101,10 +101,10 @@ ns.AddEncounter(2269,{
 				elseif spellID == 282561 then
 					if OC(spellID) then 	
 						
-						local text = 'Бафф'
+						local text = core.Lang.BUFF
 
 						if ( dstGUID == UnitGUID('player') ) then
-							text = '|cFFFF0000Бафф|r'
+							text = '|cFFFF0000'..core.Lang.BUFF..'|r'
 						end 
 						
 						ns.AddSpinner(dstGUID, spellID, 6, { GetTime(), 10 }, 80, nil, nil, text  )
@@ -168,7 +168,7 @@ ns.AddEncounter(2269,{
 					local guid = UnitGUID(findEm)
 
 					if guid ~= UnitGUID('player') then
-						ns.SetCircle(guid, 'bossTarget', 7, 90, nil, nil, 'Глашатай')	
+						ns.SetCircle(guid, 'bossTarget', 7, 90, nil, nil, core.Lang.HERALD)	
 					end
 				--	print('Tank3:',findEm)
 					encounterData.prev = guid

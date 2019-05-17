@@ -61,7 +61,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(dungeonID,{
 	Enable = true,
-	Name = "Грог",
+	Name = core.Lang.BOSS2,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -82,7 +82,7 @@ ns.AddEncounter(dungeonID,{
 					local runText = dstName
 					
 					if ( dstGUID == UnitGUID('player') ) then
-						runText = runText..'\nБеги!'
+						runText = runText..'\n'..core.Lang.RUN..'!'
 					end
 						
 					ns.AddSpinner(dstGUID,289292,3,{GetTime(), 5},90,nil,nil,runText)
@@ -93,7 +93,7 @@ ns.AddEncounter(dungeonID,{
 				if eventType == 'SPELL_AURA_APPLIED' then
 					local _, _, _, _, duration = ns.GetAuraByName(dstName, spellName, 'HARMFUL')
 
-					ns.AddSpinner(dstGUID, 285659,6,{GetTime(), duration},60,nil,nil,'Сфера')
+					ns.AddSpinner(dstGUID, 285659,6,{GetTime(), duration},60,nil,nil,core.Lang.SPHERE)
 				elseif eventType == 'SPELL_AURA_REMOVED' then
 					ns.RemoveSpinner(dstGUID, 285659) 
 				end

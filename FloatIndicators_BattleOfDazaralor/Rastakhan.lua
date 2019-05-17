@@ -50,7 +50,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2272,{
 	Enable = true,
-	Name = "Растахан",
+	Name = core.Lang.BOSS6,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {

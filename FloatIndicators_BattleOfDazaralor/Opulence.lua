@@ -50,7 +50,7 @@ core.bossOrder = core.bossOrder + 1
 
 ns.AddEncounter(2271,{
 	Enable = true,
-	Name = "Роскошь",
+	Name = core.Lang.BOSS4,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED" },
 	Settings = {
@@ -76,31 +76,31 @@ ns.AddEncounter(2271,{
             
             if spellID == 284470 and OC(284470) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 284470, 6, {GetTime(), 30},80,nil,nil,'Диспел')
+                    ns.AddSpinner(dstGUID, 284470, 6, {GetTime(), 30},80,nil,nil, core.Lang.DISPEL)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 284470)
                 end
             elseif spellID == 287072 and OC(287072) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 287072, 8, {GetTime(), 12},60,nil,nil,'Лужа')
+                    ns.AddSpinner(dstGUID, 287072, 8, {GetTime(), 12},60,nil,nil, core.Lang.POOL)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 287072)
                 end
             elseif ( spellID == 283507 or spellID == 287648 ) and OC(283507) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 283507, 3, {GetTime(), 8},90,nil,nil,'Заряд')
+                    ns.AddSpinner(dstGUID, 283507, 3, {GetTime(), 8},90,nil,nil, core.Lang.SPHERE)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 283507)
                 end
             elseif spellID == 285014 and OC(285014) then
                 if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 285014, 1, {GetTime(), 10},60,nil,nil,'Делить')
+                    ns.AddSpinner(dstGUID, 285014, 1, {GetTime(), 10},60,nil,nil, core.Lang.SHARE)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 285014)
                 end
 			elseif spellID == 289383 and OC(289383) then
 				if eventType == 'SPELL_AURA_APPLIED' then
-                    ns.AddSpinner(dstGUID, 289383, 11, {GetTime(), 6},60,nil,nil,'Свап')
+                    ns.AddSpinner(dstGUID, 289383, 11, {GetTime(), 6},60,nil,nil, core.Lang.SWAP)
                 elseif eventType == 'SPELL_AURA_REMOVED' then
                     ns.RemoveSpinner(dstGUID, 289383)
                 end				

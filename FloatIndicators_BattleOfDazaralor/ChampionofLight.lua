@@ -70,7 +70,7 @@ end
 
 ns.AddEncounter(2265,{
 	Enable = true,
-	Name = "Чемпион света",
+	Name = core.Lang.BOSS1,
 	order = core.bossOrder, raidID = core.raidID, raidN = core.raidName, version = core.version,
 	Events = { "COMBAT_LOG_EVENT_UNFILTERED", 'UNIT_AURA', 'UNIT_POWER_UPDATE' },
 	Settings = {
@@ -98,14 +98,14 @@ ns.AddEncounter(2265,{
 			elseif OC(283617) then
 				if spellID == 283617 then
 					if eventType == 'SPELL_AURA_APPLIED' then
-						ns.AddSpinner(dstGUID, 283617, 1, { GetTime(), 15 }, 60,nil,nil,'Диспел')
+						ns.AddSpinner(dstGUID, 283617, 1, { GetTime(), 15 }, 60,nil,nil, core.Lang.DISPEL)
 
 					elseif eventType == 'SPELL_AURA_REMOVED' then
 						ns.RemoveSpinner(dstGUID, 283617) 
 					end
 				elseif ( spellID == 283619 ) then
 					if eventType == 'SPELL_AURA_APPLIED' then
-						ns.AddSpinner(dstGUID, 283619, 6, { GetTime(), 7 }, 60,nil,nil,'Пурж')
+						ns.AddSpinner(dstGUID, 283619, 6, { GetTime(), 7 }, 60,nil,nil, core.Lang.PURGE)
 
 					elseif eventType == 'SPELL_AURA_REMOVED' then
 						ns.RemoveSpinner(dstGUID, 283619) 

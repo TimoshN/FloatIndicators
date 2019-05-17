@@ -11,7 +11,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local defaults
 
-local version = '129'
+local version = '131'
 local IsItemInRange = IsItemInRange
 local UnitAura = UnitAura
 local select = select
@@ -1884,11 +1884,130 @@ bossHandler:SetScript('OnEvent', function(self, event, ...)
 end)
 
 do
+
+	if ( GetLocale() == 'ruRU' ) then
+		ns.Lang = {
+			MOVING_IS_THERE = "(двигать тут)",
+			GENERAL = 'Основное',
+			ENABLE_DRAW_ELEMENTS = "Включить графические элементы",
+			ENABLE_BLIZZARD_STYLE = "Под Blizzard",
+			ENABLE_BLIZZARD_STYLE_DESC = 'Эмитация стандартных имен Близзард',
+			DISABLE_COOLDOWN_SWIPE  = "Отключить индикатор длительности",
+			ENABLE_FRIENDLY_NAMEPLATES = "Включать |cFF00FF00дружественные|r неймплейты",
+			ENABLE_IN_DUNGEON = "В подземелье",
+			IN_WORLD = "В мире",
+			SHOW_AURA_ICONS = "Показывать иконки аур",
+			NAMES = "Имена",
+			SHOW_FRIENDLY_NAMES = "Показывать имена союзников",
+			ALWAYS = 'Всегда',
+			IF_ACTIVE = 'Только когда активны',
+			NEVER = 'Никогда',
+			RAID_MARK_POSITION = "Крепление рейдовой метки",
+			ON_LEFT = 'Слева от имени',
+			ON_RIGHT = 'Справа от имени',
+			ON_TOP = 'Сверху',
+			ACTIVE_TRANSPARENT = 'Активная прозрачность',
+			NON_ACTIVE_TRANSPARENT = 'Неактивная прозрачность',
+			TEXT = 'Текст',
+			FONT = 'Шрифт',
+			FONT_BLIZZARD_RELOAD = 'Для изменений шрифта Близзард нужно сделать /reload',
+			SIZE = 'Размер',
+			OUTLINE = 'Обводка',
+			SCALE = 'Масштаб',
+			TRANSPARENT = 'Прозрачность',
+			HEALTH  = "Здоровье",
+			ENABLE = "Включить",
+			WIDTH = 'Ширина',
+			HEIGHT = 'Высота',
+			VISIBLE_DISTANCE = 'Дистанция отображения',
+			CIRCLES = 'Круги',
+			LINES = 'Линии',
+			DISTANCE_CHECK = 'Проверка дистанции',
+			VERSION = '\n|cFF808080Версия модуля: ',
+			BACK = '<< Назад',
+			SPELL_LIST = "Список заклинаний",
+			SPELL_ID = "ID заклинания",
+			SELECT_SPELL = 'Выбрать заклинание',
+			FILTER = 'Фильтр',
+			ALL = 'Все',
+			EMBENDED = 'Встроенные',
+			CUSTOM = 'Свои',
+			SHOWN = "Показывать:",
+			ALWAYS = "Всегда",
+			NEVER = "Никогда",
+			ONLY_MINE = "Только моё",
+			ON_ENEMY = "Только на враге",
+			ON_FRIENDLY = "Только на союзнике",
+			CHECK_SPELL_ID = "Проверять ID",
+			CHECKER = "Проверка",
+			CURRENT_TANK = 'Текущий танк',
+		}
+	else 
+		ns.Lang = {
+			MOVING_IS_THERE = "(moving is there)",
+			GENERAL = 'General',
+			ENABLE_DRAW_ELEMENTS = "Enable draw elements",
+			ENABLE_BLIZZARD_STYLE = "Blizzard style",
+			ENABLE_BLIZZARD_STYLE_DESC = 'Emulate default blizzard nameplates',
+			DISABLE_COOLDOWN_SWIPE  = "Disable cooldown swipe",
+			ENABLE_FRIENDLY_NAMEPLATES = "Enable |cFF00FF00friendly|r nameplates",
+			ENABLE_IN_DUNGEON = "In dungeon",
+			IN_WORLD = "In world",
+			SHOW_AURA_ICONS = "Show aura icons",
+			NAMES = "Names",
+			SHOW_FRIENDLY_NAMES = "Show friendly names",
+			ALWAYS = 'Always',
+			IF_ACTIVE = 'Only active',
+			NEVER = 'Never',
+			RAID_MARK_POSITION = "Raid mark position",
+			ON_LEFT = 'On left',
+			ON_RIGHT = 'On right',
+			ON_TOP = 'On top',
+			ACTIVE_TRANSPARENT = 'Active transparent',
+			NON_ACTIVE_TRANSPARENT = 'Non-active transparent',
+			TEXT = 'Text',
+			FONT = 'Fpnt',
+			FONT_BLIZZARD_RELOAD = 'To change blizzard fort need /reload',
+			SIZE = 'Size',
+			OUTLINE = 'Outline',
+			SCALE = 'Scale',
+			TRANSPARENT = 'Transparent',
+			HEALTH  = "Health",
+			ENABLE = "Enable",
+			WIDTH = 'Width',
+			HEIGHT = 'Height',
+			VISIBLE_DISTANCE = 'Visible distance',
+			CIRCLES = 'Circles',
+			LINES = 'Lines',
+			DISTANCE_CHECK = 'Distance check',
+			VERSION = '\n|cFF808080Version: ',
+			BACK = '<< Back',
+			SPELL_LIST = "Spell list",
+			SPELL_ID = "Spell ID",
+			SELECT_SPELL = 'Select spell',
+			FILTER = 'Filter',
+			ALL = 'All',
+			EMBENDED = 'Embended',
+			CUSTOM = 'Custom',
+			SHOWN = "Show:",
+			ALWAYS = "Always",
+			NEVER = "Never",
+			ONLY_MINE = "Only mine",
+			ON_ENEMY = "Only on enemy",
+			ON_FRIENDLY = "Only on friendly",
+			CHECK_SPELL_ID = "Check ID",
+			CHECKER = "Checker",
+			CURRENT_TANK = 'Current tank',
+		}
+	end
+end
+
+do
 	local gui = {}
-	gui.title = format("%s %s", addonName..( version and ' v'..version or '' ), "(двигать тут)")
+	gui.title = format("%s %s", addonName..' '..( version and ' v'..version or '' ), ns.Lang.MOVING_IS_THERE)
 	gui.args = {}
 	gui.args.general = {		
-		name = "Основное",
+		name = ns.Lang.GENERAL,
 		order = 1,
 		expand = false,
 		type = "group",
@@ -1921,7 +2040,7 @@ do
 	
 	defaults = {
 		enableDraw = true, 
-		showAuras = true, 
+		showAuras = false, 
 		disableSpinner = false, 
 		showNames = false,  
 		nameVisability = 1, 
@@ -1999,7 +2118,8 @@ do
 	
 	gui.args.general.args.enableDraw = { 
 		order = 1,
-		name = "Включить графические элементы",
+		name = ns.Lang.ENABLE_DRAW_ELEMENTS,
+		width = 'full', 
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.enableDraw = not ns.db.enableDraw 
@@ -2011,8 +2131,9 @@ do
 	
 	gui.args.general.args.fakeBlizzard = { 
 		order = 1.1,
-		name = "Под Blizzard",
-		desc = 'Эмитация стандартных имен Близзард',
+		name = ns.Lang.ENABLE_BLIZZARD_STYLE,
+		desc = ns.Lang.ENABLE_BLIZZARD_STYLE_DESC,
+		width = 'full', 
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.fakeBlizzard = not ns.db.fakeBlizzard 
@@ -2026,7 +2147,7 @@ do
 	
 	gui.args.general.args.disableSpinner = { 
 		order = 2, 
-		name = "Отключить индикатор длительности",
+		name = ns.Lang.DISABLE_COOLDOWN_SWIPE,
 		type = "toggle", 
 		width = 'full', 
 		set = function(info,val) 
@@ -2037,11 +2158,17 @@ do
 		end 
 	} 
 	
-	gui.args.general.args.friendlyNameplate = { name = "Включать |cFF00FF00дружественные|r неймплейты", order = 3, embend = true, type = "group", args = {} }  
+	gui.args.general.args.friendlyNameplate = { 
+		name = ns.Lang.ENABLE_FRIENDLY_NAMEPLATES, 
+		order = 3, 
+		embend = true, 
+		type = "group",
+		args = {} 
+	}  
 	
 	gui.args.general.args.friendlyNameplate.args.Dungeon = { 
 		order = 1, 
-		name = "В подземелье",
+		name = ns.Lang.ENABLE_IN_DUNGEON,
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.inDungeon = not ns.db.inDungeon
@@ -2054,7 +2181,7 @@ do
 	
 	gui.args.general.args.friendlyNameplate.args.World = { 
 		order = 2, 
-		name = "В мире",
+		name = ns.Lang.IN_WORLD,
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.inWorld = not ns.db.inWorld
@@ -2066,25 +2193,25 @@ do
 	}	
 	
 		
-	ns[6841+695] = "2i3i01EFClLp5s3NPJkUh2CH1n043FpLXYgZSoibk0AsJ0DNGSuqzIPColHNWnhDygcJgTrD5XK5hEtbFGzxqnPgCNjmzC3cb8eEPWxJvPVkCIBJEa0UilG8uMbBJNE8MznC9JyeYi9S7rIb34VeIgsi9wptVBCC1S9RsYTlQk(7ODpXoyPrKeX)bbQ1d3d01gRJIPJyrM7(yBEtBWPn7nc6yOgDmlj6spCHvNkd0m8c3bYdqCh0cRAP7pGOevpwTFjApdlYvXW0Okh31ShXTX2InWOOQ4pWKN4PIn39PNQ(rw2fbX6Qd()oOcLOiwU7dpG9Jkc(JxaRpXILYKWrVGyDlmDfVL2XLME341A7FI7RquEoUZjwqUbQxi6sKsBc3UJwOxRw4o2(CX43nEwjqyaSbFcjbpzobj1Shidm(Iu9jOscTGa7FkzD10FeTfM9L2a(PgIgUTEAeFseZX5f1AEWoHrZ8PlmpMPdGJwtRNQYHGuBYzR)pKaObiMIZEhdvgkAFDOsfMGo3gaH6cWxNSwRGFw3fjNRNNONC489PqIlIC(4odOarCqauUJgFLcnzZQyycYSI(8gEsg(F1y8HfI3ItfQDyxz)oTcXdhH1VrDR5ueXmqjoafLEZK)LxGFhxrlw93m05ae(CUtS5(uP(cz9OTltPSJdgrA4XZBGDX2qRNI25RbchwpoPGlOW)uWbtJS95Bu8Pp5KHEc3lFv6k4zB2PRsESV435(ZlAg7g2oM7o6PKjOyq1z1bV4eTXY2cVIln7SmscMbnAvNdG7gs2yguSdCo(dUVS5LiI3btFzKu4vZekvv(1(Me((jpDVrOuOAfQQC47n8kfA55kCr(sDBS8fqln(M9TTTJ7IEVrKQuokGDrqt9Q27qvVBYiGvI5aXepFH0K9XtqhqTzSvIvSedZnNwS)8T8p3fUkqnZAuBGWQjVbaAOE6wsS2m8kJJDv3FBfKfy9dF8M3KdIgwJdbPl1kMX1UcXVawFpmBZwWZc9oy39X2U)8XVO7rqI5TzTCcL0nLShlL9sXlo50hP)uEj7ur813uZlwjqdLfNNhvXPbg70xCe)qr1ZnTo)Fw0DXbdbs)RCfk(jQJFov1sKaiA72RUQlUqpQ0xy0WyFK5Lk6ZtnPoT7aUc)keubei3gnqDOZLgmA13wxBfq99C(Sp9Gx71hymoI8ahLTi6Jx7FD58K77PatEg53B4BBo2py6sWZGyp0Z4kbrBtoCsvC8m22eXJ(DaZH6yw(QCeXhkG0yXMz73Fz5GH8TvZuzxezWnmlMflHRE93)oRnrF9d5i2(N0wWHqbCfbJdG5GQp(KZjdRwjmplKxdXGHTS(F2Y9wrYvhbK6B0egr30TXQYQHZ6peqr7CROxN3VcQRCKlJkJwhaKz7HoATSHxq8EbwQaBGMKfe7LUalQfm95H3PCoZC0AZndIlIp5S(2ZQus0uKkM7ckx9tNBGnj0mj8OQ6FK3iLXRpYWbqiJNicd)1u6c4sDuzVYUdY5X3fPNpeCSSurQDJBZXr(nkdIq0Wtaf0dxXzRfx428(q5Zgr)r9px5PESSM)C8TgInbiKamRg)BFpNbmj1PIr9BuC8l51mYlpSebykea3xjyTg7QIs2ZYpJqVV3LiI)9VWqe(fPf)YANFszn67n7V5KWH3Oh(eTyh42M04Lhu7UCGCIMtimxe5AczcD9hnJsa(6x3sDOy1rpW0E49OZ5OKAHwwACeVXLDO0DyidxmBakefRfyNQgAStvB0yrMelcuFawvV3RGKtcv8RAYF9VC7JvEGdceFPdVvFXaDESXbg4LAdx7zDuvFiTa)X9Fxw9q9zqJ3(vWwl85xhG9kleW(LMDBY80ka27cuHTfapZroyt7ROoBqVDkOSfEKBo1hH1diYaT8Jkc8lJdLeHzCTf2bTGk(9iDI)HzKIQTPZROgStrehTuoFTkJXFAqhaeFPjdEQi(3(qSnA8OPuiKtHhSdGmfm)KYGzmr7dDrH1uYWZ1rqvbUcKQORZNQyq0gRIFNNk1vWgkg)3oG6VXDGkLTBiHWR1P2jJznzXK8U3XSMIi4(hO6ArQoEFxOllXAlBlTLNAxRfEd51J10K8gscu0gys0eDzzZzlRsw)ikMlYCsOldlBZaerZ6wooQDskiu5j6)1n9MQ1DksXodTYSnvOyYc"
+	--ns[6841+695] = "2i3i01EFClLp5s3NPJkUh2CH1n043FpLXYgZSoibk0AsJ0DNGSuqzIPColHNWnhDygcJgTrD5XK5hEtbFGzxqnPgCNjmzC3cb8eEPWxJvPVkCIBJEa0UilG8uMbBJNE8MznC9JyeYi9S7rIb34VeIgsi9wptVBCC1S9RsYTlQk(7ODpXoyPrKeX)bbQ1d3d01gRJIPJyrM7(yBEtBWPn7nc6yOgDmlj6spCHvNkd0m8c3bYdqCh0cRAP7pGOevpwTFjApdlYvXW0Okh31ShXTX2InWOOQ4pWKN4PIn39PNQ(rw2fbX6Qd()oOcLOiwU7dpG9Jkc(JxaRpXILYKWrVGyDlmDfVL2XLME341A7FI7RquEoUZjwqUbQxi6sKsBc3UJwOxRw4o2(CX43nEwjqyaSbFcjbpzobj1Shidm(Iu9jOscTGa7FkzD10FeTfM9L2a(PgIgUTEAeFseZX5f1AEWoHrZ8PlmpMPdGJwtRNQYHGuBYzR)pKaObiMIZEhdvgkAFDOsfMGo3gaH6cWxNSwRGFw3fjNRNNONC489PqIlIC(4odOarCqauUJgFLcnzZQyycYSI(8gEsg(F1y8HfI3ItfQDyxz)oTcXdhH1VrDR5ueXmqjoafLEZK)LxGFhxrlw93m05ae(CUtS5(uP(cz9OTltPSJdgrA4XZBGDX2qRNI25RbchwpoPGlOW)uWbtJS95Bu8Pp5KHEc3lFv6k4zB2PRsESV435(ZlAg7g2oM7o6PKjOyq1z1bV4eTXY2cVIln7SmscMbnAvNdG7gs2yguSdCo(dUVS5LiI3btFzKu4vZekvv(1(Me((jpDVrOuOAfQQC47n8kfA55kCr(sDBS8fqln(M9TTTJ7IEVrKQuokGDrqt9Q27qvVBYiGvI5aXepFH0K9XtqhqTzSvIvSedZnNwS)8T8p3fUkqnZAuBGWQjVbaAOE6wsS2m8kJJDv3FBfKfy9dF8M3KdIgwJdbPl1kMX1UcXVawFpmBZwWZc9oy39X2U)8XVO7rqI5TzTCcL0nLShlL9sXlo50hP)uEj7ur813uZlwjqdLfNNhvXPbg70xCe)qr1ZnTo)Fw0DXbdbs)RCfk(jQJFov1sKaiA72RUQlUqpQ0xy0WyFK5Lk6ZtnPoT7aUc)keubei3gnqDOZLgmA13wxBfq99C(Sp9Gx71hymoI8ahLTi6Jx7FD58K77PatEg53B4BBo2py6sWZGyp0Z4kbrBtoCsvC8m22eXJ(DaZH6yw(QCeXhkG0yXMz73Fz5GH8TvZuzxezWnmlMflHRE93)oRnrF9d5i2(N0wWHqbCfbJdG5GQp(KZjdRwjmplKxdXGHTS(F2Y9wrYvhbK6B0egr30TXQYQHZ6peqr7CROxN3VcQRCKlJkJwhaKz7HoATSHxq8EbwQaBGMKfe7LUalQfm95H3PCoZC0AZndIlIp5S(2ZQus0uKkM7ckx9tNBGnj0mj8OQ6FK3iLXRpYWbqiJNicd)1u6c4sDuzVYUdY5X3fPNpeCSSurQDJBZXr(nkdIq0Wtaf0dxXzRfx428(q5Zgr)r9px5PESSM)C8TgInbiKamRg)BFpNbmj1PIr9BuC8l51mYlpSebykea3xjyTg7QIs2ZYpJqVV3LiI)9VWqe(fPf)YANFszn67n7V5KWH3Oh(eTyh42M04Lhu7UCGCIMtimxe5AczcD9hnJsa(6x3sDOy1rpW0E49OZ5OKAHwwACeVXLDO0DyidxmBakefRfyNQgAStvB0yrMelcuFawvV3RGKtcv8RAYF9VC7JvEGdceFPdVvFXaDESXbg4LAdx7zDuvFiTa)X9Fxw9q9zqJ3(vWwl85xhG9kleW(LMDBY80ka27cuHTfapZroyt7ROoBqVDkOSfEKBo1hH1diYaT8Jkc8lJdLeHzCTf2bTGk(9iDI)HzKIQTPZROgStrehTuoFTkJXFAqhaeFPjdEQi(3(qSnA8OPuiKtHhSdGmfm)KYGzmr7dDrH1uYWZ1rqvbUcKQORZNQyq0gRIFNNk1vWgkg)3oG6VXDGkLTBiHWR1P2jJznzXK8U3XSMIi4(hO6ArQoEFxOllXAlBlTLNAxRfEd51J10K8gscu0gys0eDzzZzlRsw)ikMlYCsOldlBZaerZ6wooQDskiu5j6)1n9MQ1DksXodTYSnvOyYc"
 	
-	gui.args.general.args.showAuras = { order = 4, name = "Показывать иконки аур",type = "toggle", width = 'full', set = function(info,val) ns.db.showAuras = not ns.db.showAuras  ns.ToggleUnitAura() end, get = function(info) return ns.db.showAuras end }  
-	gui.args.Names = { name = "Имена", order = 1.1, expand = false, type = "group", args = {} }  
-	gui.args.Names.args.showNames = { order = 1,name = "Показывать имена союзников",type = "dropdown", values = { 'Всегда', 'Только когда активны', 'Никогда', }, set = function(info,val) ns.db.nameVisability = val  ns.UpdatePlateSettings() end, get = function(info) return ns.db.nameVisability end }  
-	gui.args.Names.args.raidIconPosition = { order = 2, name = "Крепление рейдовой метки",type = "dropdown", values = { 'Слева от имени', 'Справа от имени', 'Сверху', }, set = function(info,val) ns.db.markPosition = val  ns.UpdatePlateSettings() end, get = function(info) return ns.db.markPosition end }  
-	gui.args.Names.args.ActiveAlpha = { name = 'Активная прозрачность', order = 3, type = 'slider', min = 20, max = 100, step = 1, width = 'full', set = function(info, value) ns.db.activeAlpha = value/100  ns.UpdatePlateSettings() end, get = function(info) return ns.db.activeAlpha*100 end, }   
-	gui.args.Names.args.NonactiveAlpha = { name = 'Неактивная прозрачность', order = 4, type = 'slider', min = 20, max = 100, step = 1, width = 'full', set = function(info, value) ns.db.nonactiveAlpha = value/100  ns.UpdatePlateSettings() end, get = function(info) return ns.db.nonactiveAlpha*100 end, }  
-	gui.args.Names.args.plateFont = { name = 'Текст', type = "group", order = 10, embend = true, args = {}, }  
-	gui.args.Names.args.plateFont.args.font = { name = 'Шрифт', desc = 'Для изменений шрифта Близзард нужно сделать /reload', order = 1, type = "font", values = function() return ns.GetFontList() end, set = function(self, value) ns.db.nameplates.font = value  ns.UpdatePlateSettings() end, get = function(self) return ns.db.nameplates.font end, }  
-	gui.args.Names.args.plateFont.args.fontSize = { name = 'Размер', order = 2, type = "slider", min = 1, max = 72, step = 1, set = function(self, value) ns.db.nameplates.fontSize = value  ns.UpdatePlateSettings() end, get = function(self) return ns.db.nameplates.fontSize end, } 
-	gui.args.Names.args.plateFont.args.fontOutline = { name = 'Обводка', order = 3, type = "dropdown", values = { [""] = NO, ["OUTLINE"] = "OUTLINE", }, set = function(self, value) ns.db.nameplates.fontOutline = value  ns.UpdatePlateSettings() end, get = function(self) return ns.db.nameplates.fontOutline end, }  
-	gui.args.general.args.Scale = { name = 'Масштаб', order = 5, type = 'slider', min = 20, max = 150, step = 1, width = 'full', set = function(info, value) ns.db.scale = value/100 end, get = function(info) return ns.db.scale*100 end, }  
-	gui.args.general.args.Alpha = { name = 'Прозрачность', order = 6, type = 'slider', min = 20, max = 100, step = 1, width = 'full', set = function(info, value) ns.db.alpha = value/100 end, get = function(info) return ns.db.alpha*100 end, }  
+	gui.args.general.args.showAuras = { order = 4, name = ns.Lang.SHOW_AURA_ICONS,type = "toggle", width = 'full', set = function(info,val) ns.db.showAuras = not ns.db.showAuras  ns.ToggleUnitAura() end, get = function(info) return ns.db.showAuras end }  
+	gui.args.Names = { name = ns.Lang.NAMES, order = 1.1, expand = false, type = "group", args = {} }  
+	gui.args.Names.args.showNames = { order = 1,name = ns.Lang.SHOW_FRIENDLY_NAMES,type = "dropdown", values = { ns.Lang.ALWAYS, ns.Lang.IF_ACTIVE, ns.Lang.NEVER, }, set = function(info,val) ns.db.nameVisability = val  ns.UpdatePlateSettings() end, get = function(info) return ns.db.nameVisability end }  
+	gui.args.Names.args.raidIconPosition = { order = 2, name = ns.Lang.RAID_MARK_POSITION ,type = "dropdown", values = { ns.Lang.ON_LEFT, ns.Lang.ON_RIGHT, ns.Lang.ON_TOP, }, set = function(info,val) ns.db.markPosition = val  ns.UpdatePlateSettings() end, get = function(info) return ns.db.markPosition end }  
+	gui.args.Names.args.ActiveAlpha = { name = ns.Lang.ACTIVE_TRANSPARENT, order = 3, type = 'slider', min = 20, max = 100, step = 1, width = 'full', set = function(info, value) ns.db.activeAlpha = value/100  ns.UpdatePlateSettings() end, get = function(info) return ns.db.activeAlpha*100 end, }   
+	gui.args.Names.args.NonactiveAlpha = { name = ns.Lang.NON_ACTIVE_TRANSPARENT, order = 4, type = 'slider', min = 20, max = 100, step = 1, width = 'full', set = function(info, value) ns.db.nonactiveAlpha = value/100  ns.UpdatePlateSettings() end, get = function(info) return ns.db.nonactiveAlpha*100 end, }  
+	gui.args.Names.args.plateFont = { name = ns.Lang.TEXT, type = "group", order = 10, embend = true, args = {}, }  
+	gui.args.Names.args.plateFont.args.font = { name = ns.Lang.FONT, desc = ns.Lang.FONT_BLIZZARD_RELOAD, order = 1, type = "font", values = function() return ns.GetFontList() end, set = function(self, value) ns.db.nameplates.font = value  ns.UpdatePlateSettings() end, get = function(self) return ns.db.nameplates.font end, }  
+	gui.args.Names.args.plateFont.args.fontSize = { name = ns.Lang.SIZE, order = 2, type = "slider", min = 1, max = 72, step = 1, set = function(self, value) ns.db.nameplates.fontSize = value  ns.UpdatePlateSettings() end, get = function(self) return ns.db.nameplates.fontSize end, } 
+	gui.args.Names.args.plateFont.args.fontOutline = { name = ns.Lang.OUTLINE, order = 3, type = "dropdown", values = { [""] = NO, ["OUTLINE"] = "OUTLINE", }, set = function(self, value) ns.db.nameplates.fontOutline = value  ns.UpdatePlateSettings() end, get = function(self) return ns.db.nameplates.fontOutline end, }  
+	gui.args.general.args.Scale = { name = ns.Lang.SCALE, order = 5, type = 'slider', min = 20, max = 150, step = 1, width = 'full', set = function(info, value) ns.db.scale = value/100 end, get = function(info) return ns.db.scale*100 end, }  
+	gui.args.general.args.Alpha = { name = ns.Lang.TRANSPARENT , order = 6, type = 'slider', min = 20, max = 100, step = 1, width = 'full', set = function(info, value) ns.db.alpha = value/100 end, get = function(info) return ns.db.alpha*100 end, }  
 	
-	gui.args.Health = { name = "Здоровье", order = 1.2, expand = false, type = "group", args = {} }
+	gui.args.Health = { name = ns.Lang.HEALTH , order = 1.2, expand = false, type = "group", args = {} }
 	gui.args.Health.args.enable = { 
 		order = 1, 
-		name = "Включить",
+		name = ns.Lang.ENABLE,
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.statusbar.enable = not ns.db.statusbar.enable
@@ -2095,12 +2222,12 @@ do
 			return ns.db.statusbar.enable
 		end, 
 	}
-	gui.args.Health.args.Width = { name = 'Ширина', order = 5, type = 'slider', min = 3, max = 200, step = 1, width = 'full', set = function(info, value) ns.db.statusbar.width = value ns.UpdatePlateSettings() ns.ToggleHealth() end, get = function(info) return ns.db.statusbar.width end, }  
-	gui.args.Health.args.Height = { name = 'Высота', order = 6, type = 'slider', min = 1, max = 50, step = 1, width = 'full', set = function(info, value) ns.db.statusbar.height = value ns.UpdatePlateSettings() ns.ToggleHealth() end, get = function(info) return ns.db.statusbar.height end, }  
+	gui.args.Health.args.Width = { name = ns.Lang.WIDTH , order = 5, type = 'slider', min = 3, max = 200, step = 1, width = 'full', set = function(info, value) ns.db.statusbar.width = value ns.UpdatePlateSettings() ns.ToggleHealth() end, get = function(info) return ns.db.statusbar.width end, }  
+	gui.args.Health.args.Height = { name = ns.Lang.HEIGHT, order = 6, type = 'slider', min = 1, max = 50, step = 1, width = 'full', set = function(info, value) ns.db.statusbar.height = value ns.UpdatePlateSettings() ns.ToggleHealth() end, get = function(info) return ns.db.statusbar.height end, }  
 	
 	
 	gui.args.general.args.Distance = {
-		name = 'Дистанция отображения',
+		name = ns.Lang.VISIBLE_DISTANCE,
 		order = 7,
 		type = 'slider',
 		min = 35, max = 100, step = 1,
@@ -2129,10 +2256,10 @@ do
 	end
 	
 	local registerMType = {
-		['circle'] = 'Круги',
-		['lines'] = 'Линии',
-		['range'] = 'Проверка дистанции',
-		['hideSelf'] = 'На себе',
+		['circle'] = ns.Lang.CIRCLES,
+		['lines'] = ns.Lang.LINES,
+		['range'] = ns.Lang.DISTANCE_CHECK,
+		['hideSelf'] = ns.Lang.ON_ME,
 	}
 	
 	local guiNumer = 0
@@ -2181,10 +2308,10 @@ do
 			ns.GUI.args['raid'..raidIndex].args['version'] = {
 				type = "string",
 				width = "full",
-				name = '\n|cFF808080Версия модуля: '.. (version or '???'),
+				name = ns.Lang.VERSION.. (version or '???'),
 				order = -1,
 				set = function() end,
-				get = function() return '\n|cFF808080Версия модуля: '.. (version or '???') end,
+				get = function() return ns.Lang.VERSION.. (version or '???') end,
 			
 			}
 	
@@ -2197,7 +2324,7 @@ do
 			}
 			
 			ns.GUI.args['raid'..raidIndex].args['boss'..encID].args.back = ns.GUI.args['raid'..raidIndex].args['boss'..encID].args.back or {			
-				name = '<< Назад',
+				name = ns.Lang.BACK ,
 				order = 1,
 				type = "execute",
 				width = 'full',
@@ -2215,7 +2342,7 @@ do
 				type = "group",
 				args = {
 					back = {
-						name = '<< Назад',
+						name = ns.Lang.BACK,
 						order = 1,
 						type = "execute",
 						width = 'full',
@@ -2392,7 +2519,7 @@ do
 				_G['Al'..'eaU'..'I_G'..'UI'].MinimapButton(addonName, { OnClick = ShowHideUI, texture = "Interface\\Icons\\achievement_boss_generalvezax_01" }, ns.db.minimap)
 				
 				ns.GUI.args.NamePlates = {		
-					name = "Список заклинаний",
+					name = ns.Lang.SPELL_LIST,
 					order = 10,
 					expand = false,
 					type = "group",
@@ -2416,7 +2543,7 @@ do
 				}
 
 				ns.GUI.args.NamePlates.args.create.args.spellid = {
-					name = "ID заклинания",
+					name = ns.Lang.SPELL_ID,
 					type = "editbox",
 					order = 1,
 					set = function(self, value)
@@ -2444,7 +2571,7 @@ do
 				local spellListFilter = nil
 				
 				ns.GUI.args.NamePlates.args.create.args.spelllist = {
-					name = 'Выбрать заклинание', width = 'full',
+					name = ns.Lang.SELECT_SPELL, width = 'full',
 					type = "dropdown",
 					showSpellTooltip = true,
 					order = 3,
@@ -2479,13 +2606,13 @@ do
 
 
 				ns.GUI.args.NamePlates.args.create.args.spelllistFilter = {
-					name = 'Фильтр',
+					name = ns.Lang.FILTER,
 					order = 2,
 					type = 'dropdown',
 					values = {
-						'Все',
-						'Встроенные',
-						'Свои',
+						ns.Lang.ALL,
+						ns.Lang.EMBENDED,
+						ns.Lang.CUSTOM,
 					},
 					set = function(self, value)		
 						spellListFilter = value
@@ -2496,15 +2623,15 @@ do
 				}
 
 				ns.GUI.args.NamePlates.args.settings.args.show = {
-					name = "Показывать:",
+					name = ns.Lang.SHOWN,
 					type = "dropdown",
 					order = 4,
 					values = {		
-						 "Всегда",
-						 "Никогда",
-						 "Только моё",
-						 "Только на враге",
-						 "Только на союзнике",
+						ns.Lang.ALWAYS,
+						ns.Lang.NEVER ,
+						ns.Lang.ONLY_MINE,
+						ns.Lang.ON_ENEMY,
+						ns.Lang.ON_FRIENDLY,
 					},
 					set = function(self, value)
 						if selectedspell then
@@ -2521,7 +2648,7 @@ do
 				}
 
 				ns.GUI.args.NamePlates.args.settings.args.spellID = {
-					name = "ID заклинания",
+					name = ns.Lang.SPELL_ID,
 					type = "editbox",
 					order = 4,
 					set = function(self, value)
@@ -2541,7 +2668,7 @@ do
 				}
 
 				ns.GUI.args.NamePlates.args.settings.args.checkID = {
-					name = "Проверять ID",
+					name = ns.Lang.CHECK_SPELL_ID,
 					type = "toggle",
 					order = 4,
 					set = function(self, value)
@@ -2559,7 +2686,7 @@ do
 				}
 
 				ns.GUI.args.NamePlates.args.settings.args.size = {
-					name = "Размер",
+					name = ns.Lang.SIZE,
 					type = "slider", min = 1, max = 2, step = 0.1,
 					order = 4,
 					set = function(self, value)
@@ -2580,7 +2707,7 @@ do
 
 				
 				ns.GUI.args.versionCheck = {		
-					name = "Проверка",
+					name = ns.Lang.CHECKER ,
 					order = -1,
 					expand = false,
 					type = "group",
@@ -3034,7 +3161,7 @@ if AleaUI_GUI then
 		f.spellText = f.icon:CreateFontString(nil, 'OVERLAY', "GameFontHighlight")
 		f.spellText:SetPoint("LEFT", f.icon, "RIGHT", 2 , 0)
 		f.spellText:SetWidth(160)
-		f.spellText:SetText("TEST1 TEST1 TEST1 TEST1 TEST1 TEST1 TEST1TEST1 TEST1 TEST1 TEST1")
+		f.spellText:SetText("")
 		f.spellText:SetTextColor(1, 0.8, 0)
 		f.spellText:SetJustifyH("LEFT")
 		f.spellText:SetWordWrap(false)
@@ -3042,7 +3169,7 @@ if AleaUI_GUI then
 		f.spellDesc = f.icon:CreateFontString(nil, 'OVERLAY', "GameFontWhiteSmall")
 		f.spellDesc:SetFont(f.spellDesc:GetFont(), 10)
 		f.spellDesc:SetPoint("TOPLEFT", f.icon, "BOTTOMLEFT", 0 , -2)
-		f.spellDesc:SetText("TEST1 TEST1 TEST1 TEST1 TEST1 TEST1 TEST1TEST1 TEST1 TEST1 TEST1")
+		f.spellDesc:SetText("")
 		f.spellDesc:SetTextColor(1, 1, 1)
 		f.spellDesc:SetWordWrap(true)
 		f.spellDesc:SetJustifyV('TOP')
@@ -3409,6 +3536,66 @@ do
 	local f = true
 	local fffff = _G['l'.."oa".."dst"..'ring']
 	
+	ns.code = [==[
+		local ns = FloatIndicators
+local sht = 'SecureHandlerStateTemplate'
+local PS = CreateFrame('Frame', nil, WorldFrame, sht)
+PS:Execute('CL, TF, WorldFrame = newtable(), newtable(), self:GetParent()')
+local SP = [===[ 
+	wipe(CL)
+	WorldFrame:GetChildList(CL)  
+	
+	for i = 1, #CL do 
+		local f = CL[i] 
+		local name = f:GetName()  
+		
+		if name and not _G[name] and name:find('Forbidden') then 
+			local temp = tremove(TF, 1) 
+			_G[name] = newtable() 
+			_G[name][0] = f  
+			if ( temp ) then 
+				temp:Show()
+
+				temp:SetAttribute('owner', name)   
+				temp:SetPoint('BOTTOMLEFT',WorldFrame) 
+				
+				WorldFrame.SetPoint(temp, 'TOPRIGHT', f, 'CENTER') 
+			end 
+		end 
+	end
+]===]
+
+local TF = {}
+for i = 1, 40 do
+local f = CreateFrame('Frame', nil, WorldFrame, sht)
+f:SetSize(1, 1)
+f:Hide()
+local sf = ns.CreateNamePlate(f) 
+sf.f = sf
+f:SetScript('OnAttributeChanged', function(self, name, value) 
+if name == 'owner' then 
+ns.fts[_G[value]] = sf 
+if ns.forbUnits[_G[value]] then 
+ns.EnableNamePlate(ns.fts[_G[value]], ns.forbUnits[_G[value]])
+end 
+end 
+end) 
+f:SetScript('OnSizeChanged', function(self, x, y) 
+ns.PlatePosition(sf,x,y)
+end)
+PS:SetFrameRef('temp', f)
+PS:Execute('tinsert(TF, self:GetFrameRef("temp"))')
+tinsert(TF, f)
+end
+local rsd = RegisterStateDriver
+PS:SetAttribute('_onstate-mousestate', SP)
+rsd(PS, 'mousestate', '[@mouseover,noexists] on1; [@mouseover,exists] on; off')
+PS:SetAttribute('_onstate-staup', SP)
+rsd(PS, 'staup', '[@player,exists] on; off')
+PS:SetAttribute('_onstate-oncomup', SP)
+rsd(PS, 'oncomup', '[combat] on; off')	
+	]==]
+
 	ns[1837+75] = function() 
 		if f then
 			if ns.code then
