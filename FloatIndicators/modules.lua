@@ -245,7 +245,7 @@ nameplateAPI.startUp:SetScript('OnEvent', function(self, event, ...)
 	C_NamePlate.SetNamePlateFriendlySize(1, 1); 
 	
 	if ElvUI then 
-		hooksecurefunc(ElvUI[1]:GetModule('NamePlates'), 'SetBaseNamePlateSize', UpdateBasePlateSize)
+		hooksecurefunc(ElvUI[1]:GetModule('NamePlates'), 'ConfigureAll', UpdateBasePlateSize)
 	end
 	
 	--[==[
