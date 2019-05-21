@@ -1810,7 +1810,7 @@ do
 			ACTIVE_TRANSPARENT = 'Active transparent',
 			NON_ACTIVE_TRANSPARENT = 'Non-active transparent',
 			TEXT = 'Text',
-			FONT = 'Fpnt',
+			FONT = 'Font',
 			FONT_BLIZZARD_RELOAD = 'To change blizzard fort need /reload',
 			SIZE = 'Size',
 			OUTLINE = 'Outline',
