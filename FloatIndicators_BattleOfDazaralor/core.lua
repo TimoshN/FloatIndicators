@@ -36,6 +36,11 @@ if ( GetLocale() == 'ruRU' ) then
 	core.Lang.BLAST = 'Залп'
 	core.Lang.HEARTH = 'Сердце'
 	core.Lang.EXPLOSION = 'Взрыв'
+	core.Lang.SHARE = 'Делить'
+	core.Lang.KICK = 'Сбить'
+	core.Lang.PORTAL = 'Портал'
+	core.Lang.VUHDU = 'Тотем'
+	core.Lang.RAY = 'Луч'
 else 
 	core.Lang = {
 		RAID_NAME = 'Dazaralor',
@@ -71,9 +76,14 @@ else
 	core.Lang.BLAST = 'Blast'
 	core.Lang.HEARTH = 'Hearth'
 	core.Lang.EXPLOSION = 'Explosion'
+	core.Lang.SHARE = 'Share' 
+	core.Lang.KICK = 'Kick'
+	core.Lang.PORTAL = 'Portal'
+	core.Lang.VUHDU = 'Totem'
+	core.Lang.RAY = 'Ray'
 end
 
-core.version = '08.05.2019 17:39'
+core.version = '24.05.2019 00:15'
 core.raidName = core.Lang.RAID_NAME..' (T23)'
 core.raidID = 1176
 core.bossOrder = 0
