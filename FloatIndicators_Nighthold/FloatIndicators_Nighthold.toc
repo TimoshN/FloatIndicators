@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 90000
 ## Title: FloatIndicators [|cffffffffThe Nighthold|r]
 ## Dependencies: FloatIndicators
 

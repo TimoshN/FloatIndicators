@@ -11,7 +11,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local defaults
 
-local version = '131'
+local version = '140'
 local IsItemInRange = IsItemInRange
 local UnitAura = UnitAura
 local select = select
@@ -21,21 +21,18 @@ local UnitInRange = UnitInRange
 
 local LSM = LibStub and LibStub("LibSharedMedia-3.0", true) or false
 
+local DISABLE_LINES = true 
+
 ns.AddOnVer = version
 
 _G[addonName] = ns
 FIALEA = true
 
 ns.encounterData = {}
-ns.forbFrames = {}
 ns.secureFrames = {}
-ns.fts = {}
-ns.forbUnits = {}
 ns.nameplateUnits = {}
 
-local forbFrames = ns.forbFrames
 local secureFrames = ns.secureFrames
-local forbiddenToSecure = ns.fts
 
 local parent = CreateFrame('Frame', addonName..'Parent', WorldFrame)
 	parent:SetFrameLevel(0)
@@ -49,8 +46,10 @@ local playerFrame = CreateFrame('Frame', addonName..'PlayerFrame', WorldFrame)
 	playerFrame:SetSize(1,1)
 	playerFrame.offsetY = 0
 	playerFrame.isPlayerFrame = true
-	 
-local FORBIDDEN_NAMEPLATES = false
+	
+local hiddenFrame = CreateFrame('Frame')
+	hiddenFrame:Hide()
+
 local DISABLE_DRAW = false
 local GLOBAL_ALPHA = 0.5
 
@@ -62,11 +61,10 @@ local bubblePointer = {}
 local guidToObj = {}
 local objToGuid = {}
 
-local forbUnits = ns.forbUnits
-local showAnchors = false
+local showAnchors = true
 
 local function RGBToHex(...)	
-	return format("|cff%02x%02x%02x", select(1, ...))
+	return format("|cff%02x%02x%02x", ...)
 end
 
 local function GlobalScale(size)
@@ -179,17 +177,12 @@ local function IsMelee()
 end
 ns.IsMelee = IsMelee
 
-local _debug = debug
-local _print = print
-local debug = function()end
-local print = function()end
-
 local BossPositionFix = {}
 
 function ns.AddBossPositionFix(id, value)
 
 	if BossPositionFix[id] then
-		_print('ns.AddBossPositionFix - id already exists', id)
+		ns.printText('ns.AddBossPositionFix - id already exists', id)
 		return
 	end
 	
@@ -295,55 +288,6 @@ local function ResetCheckerTimer()
 	CheckerHandler:Show()	
 end
 
-
-ns.testFramePosition = true
-ns.TEST_POS = {}
-ns.TEST_POS_MAP = {}
-ns.TEST_POS_FRAME = CreateFrame('Frame')
-ns.TEST_POS_FRAME:SetScript('OnUpdate', function(self, elapsed)
-	self.elapsed = (self.elapsed or 0 ) + elapsed
-	
-	if self.elapsed < 0.01 then
-		return
-	end
-	
-	self.elapsed = 0
-
-	for i=1, #ns.TEST_POS_MAP do
-		local v = ns.TEST_POS_MAP[i]
-		
-		if v.change then
-			v.change = false
-			v.fr:SetPoint('CENTER',WorldFrame,'BOTTOMLEFT',v.x, v.y+v.offset)
-		end
-	end
-end)
-
-if ( ns.testFramePosition ) then
-	ns.TEST_POS_FRAME:Show()
-else
-	ns.TEST_POS_FRAME:Hide()
-end
-
-local function PlatePosition(self,x,y)
-	if ( ns.testFramePosition ) then
-		if not ns.TEST_POS[self.f] then
-			local index = #ns.TEST_POS_MAP+1
-			ns.TEST_POS[self.f] = index	
-			ns.TEST_POS_MAP[index] = { fr = self.f}
-		end
-		local sett = ns.TEST_POS_MAP[ns.TEST_POS[self.f]]
-		
-		sett.change = true
-		sett.x = x
-		sett.y = y
-		sett.offset = -20
-	else
-		self.f:SetPoint('CENTER',WorldFrame,'BOTTOMLEFT',x,y-20)
-	end
-end
-ns.PlatePosition = PlatePosition
-
 local function RemoveObjForGUID(guid, obj, reason)
 
 	if obj then
@@ -392,60 +336,24 @@ pH:SetScript('OnEvent', function(self, event, unit)
 		local realFrame = C_NamePlate.GetNamePlateForUnit(unit)
 		
 		if realFrame then	
-			realFrame.FIPlate.unit = unit
-			realFrame.FIPlate.guid = UnitGUID(unit)
-			realFrame.FIPlate.modID = ns.GuidToID(realFrame.FIPlate.guid)
-			realFrame.FIPlate.offsetY = BossPositionFix[realFrame.FIPlate.modID] or 0
-			realFrame.FIPlate:Show()	
-			
-			realFrame.FIPlate:SetPoint('BOTTOM',realFrame, 'BOTTOM', 0, -20)
-			
-			guidToObj[realFrame.FIPlate.guid] = realFrame.FIPlate
-			ns:UpdateDraw(realFrame.FIPlate.guid)
+			ns.EnableNamePlate(realFrame.FIPlate, unit) 
 		end
 	elseif event == 'NAME_PLATE_UNIT_REMOVED' then
 		local realFrame = C_NamePlate.GetNamePlateForUnit(unit)
 		
 		if realFrame then
-			realFrame.FIPlate.unit = nil
-			realFrame.FIPlate.guid = nil
-			realFrame.FIPlate.modID = nil
-			realFrame.FIPlate.offsetY = 0
-			realFrame.FIPlate:Hide()	
-
-			guidToObj[UnitGUID(unit)] = nil
-			ns:UpdateDraw(UnitGUID(unit))
+			ns.DisableNamePlate(realFrame.FIPlate, unit) 
 		end
 	elseif event == 'NAME_PLATE_CREATED' then
-		
-		local plate = CreateFrame('Frame', nil, parent)
-		plate:SetSize(1,1)
-		plate:Hide()
-		
-		if showAnchors then
-			local bg = plate:CreateTexture()
-			bg:SetPoint('CENTER')
-			bg:SetSize(10, 10)
-			bg:SetColorTexture(1, 1, 0, 0.5)
-		end
-		
-		plate.offsetY = 0
-		
-		--[==[
-		local positioner = CreateFrame('Frame', nil,plate)
-		positioner:SetPoint('BOTTOMLEFT',WorldFrame)
-		positioner:SetPoint('TOPRIGHT',unit,'CENTER')
-		positioner:SetScript('OnSizeChanged',PlatePosition)
-		positioner.f = plate
-		]==]
-		
+		local plate = ns.CreateNamePlate(unit) 
+
 		plate.owner = unit
 		plate.IsNameplate = true
 		unit.FIPlate = plate
 	end
 end)
 do
-	local rangeCheckFrame = CreateFrame'Frame'
+	local rangeCheckFrame = CreateFrame('Frame')
 	local minRange = 5
 	local nextRange = 8
 		
@@ -598,7 +506,8 @@ do
 		self._toObjOffsetY = nil
 	end
 	
-	function ns.AddLine(from,to,tag,colorType,lineType,offsetFrom,offsetTo, size, alpha)		
+	function ns.AddLine(from,to,tag,colorType,lineType,offsetFrom,offsetTo, size, alpha)
+		if ( DISABLE_LINES ) then return end 		
 		if not ns.db.enableDraw then return end
 		
 		local currLine = FindActive(from, to, tag)
@@ -751,6 +660,7 @@ do
 		
 		ns.UpdateLinesDraw()
 	end
+
 	function ns.RemoveLine(from,to,tag)
 		local line = FindActive(from,to,tag)		
 		
@@ -794,7 +704,11 @@ do
 	end)
 	
 	function ns.UpdateLinesDraw()
-		lineDrawUpdater:Show()
+		if ( DISABLE_LINES ) then 
+			lineDrawUpdater:Hide()
+		else 
+			lineDrawUpdater:Show()
+		end
 	end
 	
 	function ns.FreeAllLines()
@@ -804,12 +718,6 @@ do
 		
 		wipe(ActiveLines)
 	end
-end
-
-do 
-	function ns.GetInit()
-		return tonumber(string.match((debugstack(1, 1, 1)), 'core.lua:(%d-):') ) 
-	end 
 end
 
 do
@@ -1438,7 +1346,7 @@ local function PrepareHandler(name, data)
 	activeEncounter = name 
 	lastZoneWarning = nil  
 	
-	_print('Load '..data.Name) 
+	ns.printText('Load '..data.Name) 
 	
 	for i=1, #data.Events do 
 		cleuHandler:RegisterEvent(data.Events[i]) 
@@ -1571,7 +1479,7 @@ local encounters = {}
 
 function ns.AddEncounter(id, data)
 	if encounters[id] then
-		_print('FloatIndicators: Encounter already added:', id)
+		ns.printText('FloatIndicators: Encounter already added:', id)
 		return
 	end
 	encounters[id] = data
@@ -1613,7 +1521,7 @@ local function ZoneChecker()
 			if not ns.AllowAddonUse() then
 				if lastZoneWarning ~= 'dungeon'..mapID then
 					lastZoneWarning = 'dungeon'..mapID
-					_print('Decline to load '..encounters['dungeon'..mapID].Name)
+					ns.printText('Decline to load '..encounters['dungeon'..mapID].Name)
 				end
 				
 				ns.ZoneLoaderCheck()
@@ -1634,7 +1542,7 @@ local function ZoneChecker()
 			if not ns.AllowAddonUse() then
 				if lastZoneWarning ~= 'pvp' then
 					lastZoneWarning = 'pvp'
-					_print('Decline to load '..encounters['pvp'].Name)
+					ns.printText('Decline to load '..encounters['pvp'].Name)
 				end
 				
 				ns.ZoneLoaderCheck()
@@ -1656,7 +1564,7 @@ local function ZoneChecker()
 			if not ns.AllowAddonUse() then
 				if lastZoneWarning ~= 'dungeon'..mapID then
 					lastZoneWarning = 'dungeon'..mapID
-					_print('Decline to load '..encounters['dungeon'..mapID].Name)
+					ns.printText('Decline to load '..encounters['dungeon'..mapID].Name)
 				end
 				
 				ns.ZoneLoaderCheck()
@@ -1696,7 +1604,7 @@ bossHandler:SetScript('OnEvent', function(self, event, ...)
 		cleuHandler:SetScript('OnUpdate', nil)
 		if encounters[encounterID] then		
 			if not ns.AllowAddonUse() then
-				_print('Decline to load '..encounters[encounterID].Name)
+				ns.printText('Decline to load '..encounters[encounterID].Name)
 			else
 				if encounters[encounterID].Enable then
 					PrepareHandler(encounterID,  encounters[encounterID])
@@ -1922,7 +1830,8 @@ do
 				purge		= { 1, 1, 1 },
 			},
 			
-			spelllist = {},
+			spelllist_embend = {},
+			spelllist_custom = {},
 		},
 		statusbar = {
 			enable = false,
@@ -1936,7 +1845,7 @@ do
 		
 		for k,v in pairs(list) do	
 			if GetSpellInfo(k) then
-				defaults.nameplates.spelllist[GetSpellInfo(k)] = type(v) == 'target' and v or { show = 1, spellID = k, checkID = false, size = size, filter = 2, }
+				defaults.nameplates.spelllist_embend[GetSpellInfo(k)] = type(v) == 'target' and v or { show = 1, spellID = k, checkID = false, size = size, filter = 2, }
 			end	
 		end
 	end
@@ -1944,19 +1853,19 @@ do
 	
 	for k,v in pairs(defaultSpells1) do	
 		if GetSpellInfo(v) then
-			defaults.nameplates.spelllist[GetSpellInfo(v)] = specific_defaultSpellsOpts[v] or { show = 1, spellID = v, checkID = false, size = 1, filter = 2, }
+			defaults.nameplates.spelllist_embend[GetSpellInfo(v)] = specific_defaultSpellsOpts[v] or { show = 1, spellID = v, checkID = false, size = 1, filter = 2, }
 		end	
 	end
 	
 	for k,v in pairs(defaultSpells2) do	
 		if GetSpellInfo(v) then
-			defaults.nameplates.spelllist[GetSpellInfo(v)] = specific_defaultSpellsOpts[v] or { show = 1, spellID = v, checkID = false, size = 1.5, filter = 2, }
+			defaults.nameplates.spelllist_embend[GetSpellInfo(v)] = specific_defaultSpellsOpts[v] or { show = 1, spellID = v, checkID = false, size = 1.5, filter = 2, }
 		end	
 	end
 	
 	for k,v in pairs(defaultSpells3) do	
 		if GetSpellInfo(v) then
-			defaults.nameplates.spelllist[GetSpellInfo(v)] = specific_defaultSpellsOpts[v] or { show = 1, spellID = v, checkID = false, size = 2, filter = 2, }
+			defaults.nameplates.spelllist_embend[GetSpellInfo(v)] = specific_defaultSpellsOpts[v] or { show = 1, spellID = v, checkID = false, size = 2, filter = 2, }
 		end	
 	end
 	
@@ -2288,14 +2197,10 @@ do
 	local l = CreateFrame('Frame')
 	l:RegisterEvent("ADDON_LOADED")
 	l:RegisterEvent("PLAYER_LOGIN")
-	l:RegisterEvent('CLUB_STREAMS_LOADED')
-	l:RegisterEvent('INITIAL_CLUBS_LOADED')
 	l:SetScript('OnEvent', function(self, event, addon)
 		if event == "PLAYER_LOGIN" then
 			self:UnregisterEvent(event)
-			ns.RunCode()
-			
-			
+	
 			local font = ns:GetFont(ns.db.nameplates.font) 
 			local size = ns.db.nameplates.fontSize 
 			local outline = ns.db.nameplates.fontOutline  
@@ -2330,10 +2235,7 @@ do
 				ns['DefaultsReady']()
 			end		
 			ns.ToggleUnitAura()
-			ns.ToggleHealth()
-		elseif event == 'PLAYER_REGEN_ENABLED' then
-			self:UnregisterEvent(event) 
-			if ns.RunCode() then end				
+			ns.ToggleHealth()			
 		elseif event == "ADDON_LOADED" and addon == addonName then
 			self:UnregisterEvent(event)
 			
@@ -2373,17 +2275,18 @@ do
 					set = function(self, value)
 						local num = tonumber(value)			
 						if num and GetSpellInfo(num) then
-							if not ns.db.nameplates.spelllist[GetSpellInfo(num)] then
+							local spellName = GetSpellInfo(num)
+
+							if not ns.db.nameplates.spelllist_custom[spellName] then
 							
-								ns.db.nameplates.spelllist[GetSpellInfo(num)] = {}
-								ns.db.nameplates.spelllist[GetSpellInfo(num)].show = 1
-								ns.db.nameplates.spelllist[GetSpellInfo(num)].size = 1
-								ns.db.nameplates.spelllist[GetSpellInfo(num)].checkID = false
-								ns.db.nameplates.spelllist[GetSpellInfo(num)].spellID = num
-								ns.db.nameplates.spelllist[GetSpellInfo(num)].filter = 3
+								ns.db.nameplates.spelllist_custom[spellName] = {}
+								ns.db.nameplates.spelllist_custom[spellName].show = 1
+								ns.db.nameplates.spelllist_custom[spellName].size = 1
+								ns.db.nameplates.spelllist_custom[spellName].checkID = false
+								ns.db.nameplates.spelllist_custom[spellName].spellID = num
 							end
 							
-							selectedspell = GetSpellInfo(num)
+							selectedspell = spellName
 						end
 					end,
 					get = function(self)
@@ -2402,21 +2305,38 @@ do
 					values = function()
 						local t = {}
 						
-						for spellname in pairs(defaults.nameplates.spelllist) do	
-							local params =  ns.db.nameplates.spelllist[spellname]
-							
-							if params.spellID and GetSpellInfo( params.spellID ) then
-								if not spellListFilter or spellListFilter == 1 then
-									t[spellname] = ns:SpellString(params.spellID)..' |cFF505050#'..params.spellID
-								elseif spellListFilter == 3 and not params.filter then
-									t[spellname] = ns:SpellString(params.spellID)..' |cFF505050#'..params.spellID
-								elseif spellListFilter == params.filter then
+						if not spellListFilter or spellListFilter == 1 then
+							-- all
+							for spellname, params in pairs(ns.db.nameplates.spelllist_embend) do	
+								if params.spellID and GetSpellInfo( params.spellID ) then
+									if ( defaults.nameplates.spelllist_embend[spellname] ) then 
+										t[spellname] = ns:SpellString(params.spellID)..' |cFF505050#'..params.spellID
+									end					
+								end
+							end
+							for spellname, params in pairs(ns.db.nameplates.spelllist_custom) do	
+								if params.spellID and GetSpellInfo( params.spellID ) then
 									t[spellname] = ns:SpellString(params.spellID)..' |cFF505050#'..params.spellID
 								end
-							else
-								
+							end
+						elseif spellListFilter == 3 then 
+							-- custom
+							for spellname, params in pairs(ns.db.nameplates.spelllist_custom) do	
+								if params.spellID and GetSpellInfo( params.spellID ) then
+									t[spellname] = ns:SpellString(params.spellID)..' |cFF505050#'..params.spellID
+								end
+							end
+						elseif spellListFilter == 2 then 
+							-- embend			
+							for spellname, params in pairs(ns.db.nameplates.spelllist_embend) do	
+								if params.spellID and GetSpellInfo( params.spellID ) then
+									if ( defaults.nameplates.spelllist_embend[spellname] ) then 
+										t[spellname] = ns:SpellString(params.spellID)..' |cFF505050#'..params.spellID
+									end
+								end
 							end
 						end
+
 						
 						return t
 					end,
@@ -2459,12 +2379,20 @@ do
 					},
 					set = function(self, value)
 						if selectedspell then
-							ns.db.nameplates.spelllist[selectedspell].show = value
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								ns.db.nameplates.spelllist_custom[selectedspell].show = value
+							else 
+								ns.db.nameplates.spelllist_embend[selectedspell].show = value
+							end 
 						end
 					end,
 					get = function(self)
 						if selectedspell then
-							return ns.db.nameplates.spelllist[selectedspell].show or 1
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								return ns.db.nameplates.spelllist_custom[selectedspell].show or 1
+							else 
+								return ns.db.nameplates.spelllist_embend[selectedspell].show or 1
+							end
 						else
 							return 1
 						end
@@ -2479,12 +2407,20 @@ do
 						local num = tonumber(value)
 						
 						if selectedspell and num then
-							ns.db.nameplates.spelllist[selectedspell].spellID = num
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								ns.db.nameplates.spelllist_custom[selectedspell].spellID = num
+							else 
+								ns.db.nameplates.spelllist_embend[selectedspell].spellID = num
+							end 
 						end
 					end,
 					get = function(self)
 						if selectedspell then
-							return ns.db.nameplates.spelllist[selectedspell].spellID or ''
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								return ns.db.nameplates.spelllist_custom[selectedspell].spellID or ''
+							else 
+								return ns.db.nameplates.spelllist_embend[selectedspell].spellID  or ''
+							end 
 						else
 							return ''
 						end
@@ -2497,12 +2433,20 @@ do
 					order = 4,
 					set = function(self, value)
 						if selectedspell then
-							ns.db.nameplates.spelllist[selectedspell].checkID = not ns.db.nameplates.spelllist[selectedspell].checkID
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								ns.db.nameplates.spelllist_custom[selectedspell].checkID = not ns.db.nameplates.spelllist_custom[selectedspell].checkID
+							else 
+								ns.db.nameplates.spelllist_embend[selectedspell].spellID = not ns.db.nameplates.spelllist_embend[selectedspell].spellID
+							end 
 						end
 					end,
 					get = function(self)
 						if selectedspell then
-							return ns.db.nameplates.spelllist[selectedspell].checkID or false
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								return ns.db.nameplates.spelllist_custom[selectedspell].checkID or false
+							else 
+								return ns.db.nameplates.spelllist_embend[selectedspell].spellID or false
+							end 
 						else
 							return false
 						end
@@ -2515,12 +2459,20 @@ do
 					order = 4,
 					set = function(self, value)
 						if selectedspell then
-							ns.db.nameplates.spelllist[selectedspell].size = value
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								ns.db.nameplates.spelllist_custom[selectedspell].size = value
+							else 
+								ns.db.nameplates.spelllist_embend[selectedspell].size = value
+							end
 						end
 					end,
 					get = function(self)
 						if selectedspell then
-							return ns.db.nameplates.spelllist[selectedspell].size or 1
+							if ( ns.db.nameplates.spelllist_custom[selectedspell] ) then 
+								return ns.db.nameplates.spelllist_custom[selectedspell].size or 1
+							else 
+								return ns.db.nameplates.spelllist_embend[selectedspell].size or 1
+							end
 						else
 							return 1
 						end
@@ -2656,47 +2608,7 @@ local function GetColoredName(unit)
 end
 
 function ns.AllowAddonUse()
-	if true then
-		return true
-	end
-	
-	local unit = 'party'
-	local num = GetNumSubgroupMembers()+1
-	local numAllowed = 1
-	
-	if IsInRaid() then
-		unit = 'raid'
-		num = GetNumGroupMembers()
-		
-		numAllowed = ceil(num*0.6)
-	elseif IsInGroup() then
-		unit = 'party'
-		num = GetNumSubgroupMembers()+1
-		
-		numAllowed = 5
-	end
-	
-	local numHaveIt = 0
-	for i=1, num do
-		local unitC = unit..i
-		
-		if unitC == 'party'..num then
-			unitC = 'player'
-		end
-		
-		local name, server = GetUnitFullName(unitC)
-		local fullName = name..'-'..server
-
-		if HaveAddon(fullName) then
-			numHaveIt = numHaveIt + 1
-		end
-	end
-
-	if numHaveIt >= numAllowed then	
-		return true
-	end
-	
-	return false
+	return true
 end
 
 if AleaUI_GUI then
@@ -3117,76 +3029,92 @@ do
 	end
 end
 
+function ns.IsFriendly(unit)
+	local reaction = UnitReaction("player", unit)
+
+	return reaction > 4
+end
+
 function ns.CreateNamePlate(owner) 
-	local secureFrame = CreateFrame('Frame', nil, parent) 
-	secureFrame:SetSize(1, 1) 
-	secureFrame:Hide()  
+	local plate = CreateFrame('Frame', nil, owner)
+	plate:SetPoint('CENTER', owner, 'CENTER', 0, 0)
+	plate:SetSize(1, 1) 
+	plate:Hide()  
 	
-	if showAnchors then
-		local bg = secureFrame:CreateTexture()
-		bg:SetPoint('CENTER')
-		bg:SetSize(10, 10)
-		bg:SetColorTexture(1, 0, 0, 0.5)
-	end
+	-- if showAnchors then
+	-- 	local bg = plate:CreateTexture()
+	-- 	bg:SetPoint('CENTER')
+	-- 	bg:SetSize(10, 10)
+	-- 	bg:SetColorTexture(1, 0, 0, 0.5)
+	-- end
 		
-	secureFrame.offsetY = 0
+	plate.offsetY = 0
 	
-	secureFrame:SetScript('OnEvent', function(self, event, unit)
+	plate:SetScript('OnEvent', function(self, event, unit)
 		if unit ~= self.unit then return end
 		
 		if event == 'UNIT_NAME_UPDATE' then		
 			ns.UpdateNamePlateName(self, unit)
-		else
+		elseif event == 'UNIT_FACTION' or event == 'UNIT_FLAGS' then
+			local isFriend = ns.IsFriendly(unit)
+			local canAttack = UnitCanAttack("player", unit);
 
+			if ( self.isFriend ~= isFriend ) or ( self.canAttack ~= canAttack ) then
+				self.isFriend = isFriend
+				self.canAttack = canAttack
+
+				
+				ns.UpdateNameVisability(self) 
+			end
 		end
 	end)  
 	
-	secureFrame.text = secureFrame:CreateFontString() 
-	secureFrame.text:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE') 
-	secureFrame.text:SetPoint('BOTTOM', 0, 25) 
-	secureFrame.text:SetText('')  
-	secureFrame.text:SetShadowColor(0,0,0,1)
-	secureFrame.text:SetShadowOffset(1, -1)
+	plate.text = plate:CreateFontString() 
+	plate.text:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE') 
+	plate.text:SetPoint('BOTTOM', 0, 25) 
+	plate.text:SetText('')  
+	plate.text:SetShadowColor(0,0,0,1)
+	plate.text:SetShadowOffset(1, -1)
 	
-	secureFrame.raidIconParent = CreateFrame('Frame', nil, secureFrame)
-	secureFrame.raidIconParent:SetSize(1,1)
-	secureFrame.raidIconParent:SetFrameLevel(secureFrame:GetFrameLevel())
+	plate.raidIconParent = CreateFrame('Frame', nil, plate)
+	plate.raidIconParent:SetSize(1,1)
+	plate.raidIconParent:SetFrameLevel(plate:GetFrameLevel())
 		
-	secureFrame.raidIcon = secureFrame.raidIconParent:CreateTexture(nil, 'ARTWORK') 
-	secureFrame.raidIcon:SetSize(20, 20) 
-	secureFrame.raidIcon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]]) 
-	secureFrame.raidIcon:Hide() 
-	secureFrame.raidIcon:SetPoint('RIGHT', secureFrame.text, 'LEFT', 0, 0)  
+	plate.raidIcon = plate.raidIconParent:CreateTexture(nil, 'ARTWORK') 
+	plate.raidIcon:SetSize(20, 20) 
+	plate.raidIcon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]]) 
+	plate.raidIcon:Hide() 
+	plate.raidIcon:SetPoint('RIGHT', plate.text, 'LEFT', 0, 0)  
 	
-	secureFrame.statusBar = CreateFrame('StatusBar', nil, secureFrame)
-	secureFrame.statusBar:SetSize(60,3)
-	secureFrame.statusBar:SetStatusBarTexture([[Interface\Buttons\WHITE8x8]])
-	secureFrame.statusBar:SetPoint('TOP', secureFrame.text, 'BOTTOM', 0, 0) 
-	secureFrame.statusBar:Hide()
+	plate.statusBar = CreateFrame('StatusBar', nil, plate)
+	plate.statusBar:SetSize(60,3)
+	plate.statusBar:SetStatusBarTexture([[Interface\Buttons\WHITE8x8]])
+	plate.statusBar:SetPoint('TOP', plate.text, 'BOTTOM', 0, 0) 
+	plate.statusBar:Hide()
 	
-	secureFrame.statusBar.background = secureFrame.statusBar:CreateTexture(nil, 'BACKGROUND')
-	secureFrame.statusBar.background:SetTexture([[Interface\Buttons\WHITE8x8]])
-	secureFrame.statusBar.background:SetColorTexture(0,0,0,1)
-	secureFrame.statusBar.background:SetPoint('TOPLEFT', secureFrame.statusBar, 'TOPLEFT', -1, 1)
-	secureFrame.statusBar.background:SetPoint('BOTTOMRIGHT', secureFrame.statusBar, 'BOTTOMRIGHT', 1, -1)
+	plate.statusBar.background = plate.statusBar:CreateTexture(nil, 'BACKGROUND')
+	plate.statusBar.background:SetTexture([[Interface\Buttons\WHITE8x8]])
+	plate.statusBar.background:SetColorTexture(0,0,0,1)
+	plate.statusBar.background:SetPoint('TOPLEFT', plate.statusBar, 'TOPLEFT', -1, 1)
+	plate.statusBar.background:SetPoint('BOTTOMRIGHT', plate.statusBar, 'BOTTOMRIGHT', 1, -1)
 	
-	secureFrame.DebuffFrame = CreateFrame('Frame', nil, secureFrame) 
-	secureFrame.DebuffFrame.plate = secureFrame 
-	secureFrame.DebuffFrame:SetSize(20, 20) 
-	secureFrame.DebuffFrame:SetFrameLevel(secureFrame:GetFrameLevel()+1) 
-	secureFrame.DebuffFrame:SetPoint("BOTTOMLEFT", secureFrame.text, 'TOPLEFT', 0, 2) 
-	secureFrame.DebuffFrame:SetPoint("BOTTOMRIGHT", secureFrame.text, 'TOPRIGHT', 0, 2) 
-	secureFrame.DebuffFrame.icons = {}  
+	plate.DebuffFrame = CreateFrame('Frame', nil, plate) 
+	plate.DebuffFrame.plate = plate 
+	plate.DebuffFrame:SetSize(20, 20) 
+	plate.DebuffFrame:SetFrameLevel(plate:GetFrameLevel()+1) 
+	plate.DebuffFrame:SetPoint("BOTTOMLEFT", plate.text, 'TOPLEFT', 0, 2) 
+	plate.DebuffFrame:SetPoint("BOTTOMRIGHT", plate.text, 'TOPRIGHT', 0, 2) 
+	plate.DebuffFrame.icons = {}  
 	
 	for i=1, 3 do 
-		local iconf = CreateFrame("Frame", nil, secureFrame.DebuffFrame) 
+		local iconf = CreateFrame("Frame", nil, plate.DebuffFrame) 
 		iconf:SetSize(14, 14) 
-		iconf:SetFrameLevel(secureFrame:GetFrameLevel()+1)  
+		iconf:SetFrameLevel(plate:GetFrameLevel()+1)  
 		
 		if i==1 then 
-			iconf:SetPoint('BOTTOMLEFT', secureFrame.DebuffFrame, 'BOTTOMLEFT', 0, 0) 
+			iconf:SetPoint('BOTTOMLEFT', plate.DebuffFrame, 'BOTTOMLEFT', 0, 0) 
 		else 
-			iconf:SetPoint('BOTTOMLEFT', secureFrame.DebuffFrame.icons[i-1], 'BOTTOMRIGHT', 3, 0) 
+			iconf:SetPoint('BOTTOMLEFT', plate.DebuffFrame.icons[i-1], 'BOTTOMRIGHT', 3, 0) 
 		end  
 		
 		iconf.icon = iconf:CreateTexture(nil, 'ARTWORK') 
@@ -3216,23 +3144,23 @@ function ns.CreateNamePlate(owner)
 		iconf.stack:Show()  
 		iconf:Hide() 
 		ns:CreateBackdrop(iconf)  
-		secureFrame.DebuffFrame.icons[i] = iconf 
+		plate.DebuffFrame.icons[i] = iconf 
 	end  
 	
-	secureFrame.BuffFrame = CreateFrame('Frame', nil, secureFrame) 
-	secureFrame.BuffFrame:SetSize(20, 20) 
-	secureFrame.BuffFrame:SetFrameLevel(secureFrame:GetFrameLevel()+1) 
-	secureFrame.BuffFrame:SetPoint("BOTTOMLEFT", secureFrame.DebuffFrame, 'TOPLEFT', 0, 1) 
-	secureFrame.BuffFrame:SetPoint("BOTTOMRIGHT", secureFrame.DebuffFrame, 'TOPRIGHT', 0, 1) 
-	secureFrame.BuffFrame.icons = {} 
+	plate.BuffFrame = CreateFrame('Frame', nil, plate) 
+	plate.BuffFrame:SetSize(20, 20) 
+	plate.BuffFrame:SetFrameLevel(plate:GetFrameLevel()+1) 
+	plate.BuffFrame:SetPoint("BOTTOMLEFT", plate.DebuffFrame, 'TOPLEFT', 0, 1) 
+	plate.BuffFrame:SetPoint("BOTTOMRIGHT", plate.DebuffFrame, 'TOPRIGHT', 0, 1) 
+	plate.BuffFrame.icons = {} 
 	for i=1, 3 do 
-		local iconf = CreateFrame("Frame", nil, secureFrame.BuffFrame) 
+		local iconf = CreateFrame("Frame", nil, plate.BuffFrame) 
 		iconf:SetSize(14, 14) 
-		iconf:SetFrameLevel(secureFrame:GetFrameLevel()+1)  
+		iconf:SetFrameLevel(plate:GetFrameLevel()+1)  
 		if i==1 then 
-			iconf:SetPoint('BOTTOMRIGHT', secureFrame.BuffFrame, 'BOTTOMRIGHT', 0, 0) 
+			iconf:SetPoint('BOTTOMRIGHT', plate.BuffFrame, 'BOTTOMRIGHT', 0, 0) 
 		else 
-			iconf:SetPoint('BOTTOMRIGHT', secureFrame.BuffFrame.icons[i-1], 'BOTTOMLEFT', -3, 0) 
+			iconf:SetPoint('BOTTOMRIGHT', plate.BuffFrame.icons[i-1], 'BOTTOMLEFT', -3, 0) 
 		end  
 		
 		iconf.icon = iconf:CreateTexture(nil, 'ARTWORK') 
@@ -3261,175 +3189,12 @@ function ns.CreateNamePlate(owner)
 		iconf.stack:Show()  
 		iconf:Hide()  
 		ns:CreateBackdrop(iconf)  
-		secureFrame.BuffFrame.icons[i] = iconf 
+		plate.BuffFrame.icons[i] = iconf 
 	end  
-	secureFrames[#secureFrames+1] = secureFrame  
+	secureFrames[#secureFrames+1] = plate  
 	
-	return secureFrame
+	return plate
 end  
-
-do
-	local table_concat = table.concat
-	local string_byte = string.byte
-	local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-	local fmt, tostring, string_char, strsplit = string.format, tostring, string.char, strsplit
-
-	local bytetoB64 = {
-		[0]="a","b","c","d","e","f","g","h",
-		"i","j","k","l","m","n","o","p",
-		"q","r","s","t","u","v","w","x",
-		"y","z","A","B","C","D","E","F",
-		"G","H","I","J","K","L","M","N",
-		"O","P","Q","R","S","T","U","V",
-		"W","X","Y","Z","0","1","2","3",
-		"4","5","6","7","8","9","(",")"
-	}
-
-	local B64tobyte = {
-		  a =  0,  b =  1,  c =  2,  d =  3,  e =  4,  f =  5,  g =  6,  h =  7,
-		  i =  8,  j =  9,  k = 10,  l = 11,  m = 12,  n = 13,  o = 14,  p = 15,
-		  q = 16,  r = 17,  s = 18,  t = 19,  u = 20,  v = 21,  w = 22,  x = 23,
-		  y = 24,  z = 25,  A = 26,  B = 27,  C = 28,  D = 29,  E = 30,  F = 31,
-		  G = 32,  H = 33,  I = 34,  J = 35,  K = 36,  L = 37,  M = 38,  N = 39,
-		  O = 40,  P = 41,  Q = 42,  R = 43,  S = 44,  T = 45,  U = 46,  V = 47,
-		  W = 48,  X = 49,  Y = 50,  Z = 51,["0"]=52,["1"]=53,["2"]=54,["3"]=55,
-		["4"]=56,["5"]=57,["6"]=58,["7"]=59,["8"]=60,["9"]=61,["("]=62,[")"]=63
-	}
-
-	local encodeB64Table = {};
-
-	local function enc(str)
-		local B64 = encodeB64Table;
-		local remainder = 0;
-		local remainder_length = 0;
-		local encoded_size = 0;
-		local l=#str
-		local code
-		for i=1,l do
-			code = string_byte(str, i);
-			remainder = remainder + bit_lshift(code, remainder_length);
-			remainder_length = remainder_length + 8;
-			while(remainder_length) >= 6 do
-				encoded_size = encoded_size + 1;
-				B64[encoded_size] = bytetoB64[bit_band(remainder, 63)];
-				remainder = bit_rshift(remainder, 6);
-				remainder_length = remainder_length - 6;
-			end
-		end
-		if remainder_length > 0 then
-			encoded_size = encoded_size + 1;
-			B64[encoded_size] = bytetoB64[remainder];
-		end
-		return table_concat(B64, "", 1, encoded_size)
-	end
-
-	local decodeB64Table = {}
-
-	local function dec(str)
-		local bit8 = decodeB64Table;
-		local decoded_size = 0;
-		local ch;
-		local i = 1;
-		local bitfield_len = 0;
-		local bitfield = 0;
-		local l = #str;
-		while true do
-			if bitfield_len >= 8 then
-				decoded_size = decoded_size + 1;
-				bit8[decoded_size] = string_char(bit_band(bitfield, 255));
-				bitfield = bit_rshift(bitfield, 8);
-				bitfield_len = bitfield_len - 8;
-			end
-			ch = B64tobyte[str:sub(i, i)];
-			bitfield = bitfield + bit_lshift(ch or 0, bitfield_len);
-			bitfield_len = bitfield_len + 6;
-			if i > l then
-				break;
-			end
-			i = i + 1;
-		end
-		return table_concat(bit8, "", 1, decoded_size)
-	end
-	
-	
-	ns._dec = dec
-	ns._enc = enc
-end
-
-do 
-	local f = true
-
-	ns.code = [==[
-		local ns = FloatIndicators
-local sht = 'SecureHandlerStateTemplate'
-local PS = CreateFrame('Frame', nil, WorldFrame, sht)
-PS:Execute('CL, TF, WorldFrame = newtable(), newtable(), self:GetParent()')
-local SP = [===[ 
-	wipe(CL)
-	WorldFrame:GetChildList(CL)  
-	
-	for i = 1, #CL do 
-		local f = CL[i] 
-		local name = f:GetName()  
-		
-		if name and not _G[name] and name:find('Forbidden') then 
-			local temp = tremove(TF, 1) 
-			_G[name] = newtable() 
-			_G[name][0] = f  
-			if ( temp ) then 
-				temp:Show()
-
-				temp:SetAttribute('owner', name)   
-				temp:SetPoint('BOTTOMLEFT',WorldFrame) 
-				
-				WorldFrame.SetPoint(temp, 'TOPRIGHT', f, 'CENTER') 
-			end 
-		end 
-	end
-]===]
-
-local TF = {}
-for i = 1, 40 do
-local f = CreateFrame('Frame', nil, WorldFrame, sht)
-f:SetSize(1, 1)
-f:Hide()
-local sf = ns.CreateNamePlate(f) 
-sf.f = sf
-f:SetScript('OnAttributeChanged', function(self, name, value) 
-if name == 'owner' then 
-ns.fts[_G[value]] = sf 
-if ns.forbUnits[_G[value]] then 
-ns.EnableNamePlate(ns.fts[_G[value]], ns.forbUnits[_G[value]])
-end 
-end 
-end) 
-f:SetScript('OnSizeChanged', function(self, x, y) 
-ns.PlatePosition(sf,x,y)
-end)
-PS:SetFrameRef('temp', f)
-PS:Execute('tinsert(TF, self:GetFrameRef("temp"))')
-tinsert(TF, f)
-end
-local rsd = RegisterStateDriver
-PS:SetAttribute('_onstate-mousestate', SP)
-rsd(PS, 'mousestate', '[@mouseover,noexists] on1; [@mouseover,exists] on; off')
-PS:SetAttribute('_onstate-staup', SP)
-rsd(PS, 'staup', '[@player,exists] on; off')
-PS:SetAttribute('_onstate-oncomup', SP)
-rsd(PS, 'oncomup', '[combat] on; off')	
-	]==]
-
-	ns.RunCode = function() 
-		if f then
-			if ns.code then
-				loadstring(ns.code)()
-				f = false 
-				return true 
-			end
-		end  
-		return not f 
-	end
-end
 
 function ns.UpdatePlateSettings()
 	for i=1, #secureFrames do
@@ -3548,11 +3313,19 @@ function ns.EnableNamePlate(frame, unit)
 		ns.UpdateSettings(frame) 
 	end  
 
-	frame.unit = unit 
-	frame.guid = UnitGUID(unit)  
-
-	frame:RegisterEvent('UNIT_NAME_UPDATE')  
+	frame.unit = unit
+	frame.isMinus = UnitClassification(unit) == 'minus'
+	frame.isPlayer = UnitIsPlayer(unit)
+	frame.isFriend = ns.IsFriendly(unit)
+	frame.canAttack = UnitCanAttack('player', unit);
+	frame.guid = UnitGUID(unit)
+	frame.modID = ns.GuidToID(frame.guid)
+	frame.offsetY = BossPositionFix[frame.modID] or 0
 	
+	frame:RegisterEvent('UNIT_NAME_UPDATE')  
+	frame:RegisterEvent('UNIT_FACTION')  
+	frame:RegisterEvent('UNIT_FLAGS')  
+
 	if ns.db.showAuras then 
 		ns.UpdateAuras(frame) 
 	end  
@@ -3577,7 +3350,6 @@ function ns.EnableNamePlate(frame, unit)
 	end  
 
 	ns.UpdateNamePlateName(frame, unit)
-	
 	ns:UpdateDraw(frame.guid) 
 	ns.UpdateNameVisability(frame) 
 end  
@@ -3586,11 +3358,16 @@ function ns.DisableNamePlate(frame, unit)
 	frame:Hide()  
 	frame.unit = nil 
 	frame.guid = nil  
-	
+	frame.offsetY = 0
+	frame.modID = nil
+
 	ns.nameplateUnits[unit] = nil
 	frame.haveRaidIcon = false  
 	
 	frame:UnregisterEvent('UNIT_NAME_UPDATE') 
+	frame:UnregisterEvent('UNIT_FACTION')  
+	frame:UnregisterEvent('UNIT_FLAGS')  
+
 	ns.HideAuras(frame)  
 	ns.HideHealth(frame) 
 	
@@ -3619,10 +3396,24 @@ end
 
 function ns.UpdateNameVisability(frame) 
 	if frame then 
-		if frame.IsNameplate or frame.isPlayerFrame then 
-			return
-		end  
 		
+		if ( not frame.isFriend or frame.canAttack ) then
+
+			frame.raidIcon:Hide()
+			frame.text:Hide()
+			frame.statusBar:Hide()
+
+			if ( frame:GetParent().UnitFrame ) then 
+				frame:GetParent().UnitFrame:SetParent( frame:GetParent() )
+			end 
+
+			return
+		end
+
+		if ( frame:GetParent().UnitFrame ) then 
+			frame:GetParent().UnitFrame:SetParent( hiddenFrame )
+		end 
+
 		local isActive = not not ( frame.haveRaidIcon or frame.haveAuras or frame.haveLine or frame.haveCircle )  
 		
 		local forceupdate = ( frame.last_haveAuras ~= frame.haveAuras ) or ( frame.last_haveRaidIcon ~= frame.haveRaidIcon )
@@ -3636,6 +3427,9 @@ function ns.UpdateNameVisability(frame)
 		frame.last_isActive = isActive  
 		
 		frame.raidIcon:ClearAllPoints()  
+		if ( frame.haveRaidIcon ) then 
+			frame.raidIcon:Show()
+		end
 		frame.text:SetPoint('BOTTOM', 0, 25)  
 		
 		if ns.db.nameVisability == 1 then 
@@ -3663,68 +3457,6 @@ function ns.UpdateNameVisability(frame)
 		end 
 	end 
 end
-
-local nH = CreateFrame('Frame')
-nH:RegisterEvent('FORBIDDEN_NAME_PLATE_UNIT_ADDED')
-nH:RegisterEvent('FORBIDDEN_NAME_PLATE_CREATED')
-nH:RegisterEvent('FORBIDDEN_NAME_PLATE_UNIT_REMOVED')
-nH:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-nH:RegisterEvent('RAID_TARGET_UPDATE')
-nH:SetScript('OnEvent', function(self, event, ...)
-	if event == 'FORBIDDEN_NAME_PLATE_UNIT_ADDED' then
-		local namePlateUnitToken = ...;
-		local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, true);
-
-		forbUnits[namePlateFrameBase] = namePlateUnitToken
-
-		if forbiddenToSecure[namePlateFrameBase] then
-			ns.EnableNamePlate(forbiddenToSecure[namePlateFrameBase], namePlateUnitToken)
-		end			
-	elseif event == 'FORBIDDEN_NAME_PLATE_CREATED' then
-		local namePlateFrameBase = ...;
-	
-	elseif event == 'FORBIDDEN_NAME_PLATE_UNIT_REMOVED' then
-		local namePlateUnitToken = ...;
-		local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, true);
-		
-		forbUnits[namePlateFrameBase] = nil
-
-		if forbiddenToSecure[namePlateFrameBase] then
-			ns.DisableNamePlate(forbiddenToSecure[namePlateFrameBase], namePlateUnitToken)	
-		end	
-	elseif event == 'RAID_TARGET_UPDATE' then
-		for i=1, #secureFrames do 
-			local frame = secureFrames[i] 
-			local unit = frame.unit  
-			
-			if unit then 
-				local index = GetRaidTargetIndex(unit)  
-				
-				if ( index and raidIndexCoord[index] ) then 
-					frame.raidIcon:Show() 
-					frame.raidIcon:SetTexCoord(raidIndexCoord[index][1], raidIndexCoord[index][2], raidIndexCoord[index][3], raidIndexCoord[index][4]) 
-					frame.haveRaidIcon = true 
-				else 
-					frame.raidIcon:Hide() 
-					frame.haveRaidIcon = false 
-				end 
-			else 
-				frame.raidIcon:Hide() 
-				frame.haveRaidIcon = false 
-			end  
-			
-			ns.UpdateNameVisability(frame) 
-		end
-	elseif event == 'ZONE_CHANGED_NEW_AREA' then
-		local name, zoneType = GetInstanceInfo()
-		
-		if name and zoneType ~= 'none' then
-			FORBIDDEN_NAMEPLATES = true
-		else
-			FORBIDDEN_NAMEPLATES = false
-		end
-	end
-end)
 
 do
 	
@@ -3791,7 +3523,15 @@ local function FillAuraFrame(frame, unit, filter, obj)
 			local skip2 = false
 		
 			if true then
-				local argW = defaults.nameplates.spelllist[name] and ns.db.nameplates.spelllist[name]
+				local argW 
+
+				if ( ns.db.nameplates.spelllist_custom[name] ) then 
+					argW = ns.db.nameplates.spelllist_custom[name]
+				elseif ( defaults.nameplates.spelllist_embend[name] and ns.db.nameplates.spelllist_embend[name] ) then
+					argW = ns.db.nameplates.spelllist_embend[name]
+				end
+
+
 				local localHeight = height
 				local localWidth = width
 				
@@ -3896,13 +3636,15 @@ function ns:UpdateAuras(reason)
 	
 	self.haveAuras = false  
 	FillAuraFrame(self.DebuffFrame, self.unit, 'HARMFUL', self) 
+	FillAuraFrame(self.BuffFrame, self.unit, 'HELPFUL', self) 
 	ns.UpdateNameVisability(self) 
 end
 
 function ns:HideAuras()
 	self.updateaura = true
 	self.haveAuras = false  
-	FillAuraFrameHide(self.DebuffFrame) 
+	FillAuraFrameHide(self.DebuffFrame)
+	FillAuraFrameHide(self.BuffFrame) 
 	ns.UpdateNameVisability(self) 
 end
 
@@ -3934,7 +3676,7 @@ end
 
 do
 	local h = CreateFrame('Frame')
-	h:SetScript('OnEvent', function(self, event, unit)
+	h:SetScript('OnEvent', function(self, event, unit)		
 		local frame = ns.nameplateUnits[unit]
 		
 		if frame then
@@ -3957,7 +3699,7 @@ do
 		end
 	end)
 	
-	function ns.ToggleUnitAura()		
+	function ns.ToggleUnitAura()	
 		if ns.db.showAuras then
 			h:RegisterEvent('UNIT_AURA')
 			h:Show()
@@ -3986,13 +3728,13 @@ do
 	
 	function ns.ToggleHealth()
 		if ns.db.statusbar.enable then
-			h:RegisterEvent('UNIT_HEALTH_FREQUENT')
+			h:RegisterEvent('UNIT_HEALTH')
 			h:RegisterEvent('UNIT_MAXHEALTH')
 			for k,v in pairs(ns.nameplateUnits) do
 				ns.UpdateHealth(v) 
 			end
 		else
-			h:UnregisterEvent('UNIT_HEALTH_FREQUENT')
+			h:UnregisterEvent('UNIT_HEALTH')
 			h:UnregisterEvent('UNIT_MAXHEALTH')
 			for k,v in pairs(ns.nameplateUnits) do
 				ns.HideHealth(v) 
@@ -4042,31 +3784,57 @@ end
 function ns:GetDescription(option)
 	if option > 0 then
 		local spellName, _, icon = GetSpellInfo(option)
-		if not spellName then _print(("Invalid option %d in module %s."):format(option)) end
+		if not spellName then ns.printText(("Invalid option %d in module %s."):format(option)) end
 		local desc = GetSpellDescription(option)
-		if not desc then _print(("No spell description was returned for id %d!"):format(option)) desc = "" end
+		if not desc then ns.printText(("No spell description was returned for id %d!"):format(option)) desc = "" end
 
 		return option, spellName, desc, icon
 	else
 		local title, description, _, abilityIcon, displayInfo = C_EncounterJournal.GetSectionInfo(-option)
-		if not title then _print(("Invalid option %d in module %s."):format(option)) end
+		if not title then ns.printText(("Invalid option %d in module %s."):format(option)) end
 
 		return option, title, description, abilityIcon or false
 	end
 end
 
-do 
-	function ns.GetLine() 
-		return tonumber(string.match((debugstack(1, 1, 1)), 'core.lua:(%d-):') )
-	end 
-end  
-
-function ns.printText(...) 
-	_print('FI', ns.GetLine(), ...) 
+function ns.printText(text, ...) 
+    text = tostring(text)
+    for n=1,select('#', ...) do
+        local e = select(n, ...)
+        text = text.." "..tostring(e)
+    end
+    local patterns = {"\n", "^.-AddOns\\", ": in function.*$"}
+    local source = debugstack(2,1,0)
+    for i = 1, #patterns do source = gsub(source, patterns[i], "") end
+    text = "FI: ["..source.." - print(\""..text.."\")"
+    return print(text)
 end
 
-local function OCMe(spellID) if not activeEncounter then return false end  if ns.db.encounters[activeEncounter] then if ns.db.encounters[activeEncounter][spellID] and ns.db.encounters[activeEncounter][spellID]['circle'].hideSelf ~= nil then return ns.db.encounters[activeEncounter][spellID]['circle'].hideSelf end end  return false end 
-local function OLMe(spellID) if not activeEncounter then return false end  if ns.db.encounters[activeEncounter] then if ns.db.encounters[activeEncounter][spellID] and ns.db.encounters[activeEncounter][spellID]['lines'].hideSelf ~= nil then return ns.db.encounters[activeEncounter][spellID]['lines'].hideSelf end end  return false end 
+local function OCMe(spellID) 
+	if not activeEncounter then 
+		return false 
+	end  
+	if ns.db.encounters[activeEncounter] then 
+		if ns.db.encounters[activeEncounter][spellID] and ns.db.encounters[activeEncounter][spellID]['circle'].hideSelf ~= nil then 
+			return ns.db.encounters[activeEncounter][spellID]['circle'].hideSelf 
+		end 
+	end  
+	return false 
+end 
+
+local function OLMe(spellID) 
+	if not activeEncounter then 
+		return false 
+	end  
+	
+	if ns.db.encounters[activeEncounter] then 
+		if ns.db.encounters[activeEncounter][spellID] and ns.db.encounters[activeEncounter][spellID]['lines'].hideSelf ~= nil then 
+			return ns.db.encounters[activeEncounter][spellID]['lines'].hideSelf 
+		end 
+	end  
+	return false 
+end 
+
 local function RCMe(spellID) 
 	if not activeEncounter then return false end  
 	if ns.db.encounters[activeEncounter] then 

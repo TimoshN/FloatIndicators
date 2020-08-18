@@ -1,7 +1,7 @@
-## Interface: 80000
+## Interface: 90000
 ## Title: FloatIndicators
 ## Author: Alea
-## Version: 130
+## Version: 140
 ## SavedVariables: FIDB
 ## SavedVariablesPerCharacter: FICDB
 

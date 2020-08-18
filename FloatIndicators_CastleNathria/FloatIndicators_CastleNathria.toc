@@ -1,6 +1,5 @@
 ## Interface: 90000
-## Title: FloatIndicators [|cffffffffCrucible Of Storms|r]
+## Title: FloatIndicators [|cffffffffCastle Nathria|r]
 ## Dependencies: FloatIndicators
 
 modules.xml
-

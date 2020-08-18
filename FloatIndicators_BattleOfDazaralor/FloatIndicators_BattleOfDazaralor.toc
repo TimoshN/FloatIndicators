@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 90000
 ## Title: FloatIndicators [|cffffffffBattleOfDazaralor|r]
 ## Dependencies: FloatIndicators
 

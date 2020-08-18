@@ -1,6 +1,6 @@
 ﻿local addon, ns = ...
 
-local C = {}
+local version_ns = {}
 local addonChannel = "FIVCH"
 local remindMeagain_Guild = true
 local remindMeagain_Raid = true
@@ -23,7 +23,7 @@ if not IsAddonMessagePrefixRegistered(addonChannel) then
 	RegisterAddonMessagePrefix(addonChannel)
 end
 
-function C:AddonMessage(msg, channel)
+function version_ns:AddonMessage(msg, channel)
 
 	if channel == "GUILD" and IsInGuild() then
 		SendAddonMessage(addonChannel, msg, "GUILD")
@@ -93,7 +93,7 @@ function events:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	
 	if version and source then
 		local cntrV = constructVersion(version)
-		local cntrmV = constructVersion(C.myVersionT)
+		local cntrmV = constructVersion(version_ns.myVersionT)
 	
 		if cntrV > cntrmV then
 			
@@ -120,13 +120,13 @@ end
 function events:SendAddonIndo()
 	if GetTime() < versioncheck1 then return end
 	versioncheck1 = GetTime() + sendmessagethottle
-	C:AddonMessage(format("%s:%s", C.myVersionT, C.VersionSource))
+	version_ns:AddonMessage(format("%s:%s", version_ns.myVersionT, version_ns.VersionSource))
 end
 
 function events:SendAddonIndo2()
 	if GetTime() < versioncheck2 then return end
 	versioncheck2 = GetTime() + sendmessagethottle
-	C:AddonMessage(format("%s:%s", C.myVersionT, C.VersionSource) , "GUILD")
+	version_ns:AddonMessage(format("%s:%s", version_ns.myVersionT, version_ns.VersionSource) , "GUILD")
 end
 
 events.GROUP_ROSTER_UPDATE = events.SendAddonIndo
@@ -148,9 +148,9 @@ function events:PLAYER_LOGIN()
 	
 	name = UnitName("player").."-"..GetRealmName():gsub(' ', '')
 	
-	C.myVersionT = version
-	C.myVersion = tonumber(version_c) or 0
-	C.VersionSource = 'main'
+	version_ns.myVersionT = version
+	version_ns.myVersion = tonumber(version_c) or 0
+	version_ns.VersionSource = 'main'
 
 	events:RegisterEvent("CHAT_MSG_ADDON")
 	events:RegisterEvent("GROUP_ROSTER_UPDATE")
