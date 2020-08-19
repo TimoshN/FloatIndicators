@@ -277,6 +277,25 @@ function C:Update(addonName)
 	self.tree:UpdateElements(o)
 
 	C:GetRightGroupFramesFrame(self, o)
+
+	if ( self.__border ) then 
+		self.__border:SetBackdrop({
+			bgFile = [[Interface\Buttons\WHITE8x8]],
+			edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
+			edgeSize = 16,
+			insets = {
+				left = 5,
+				right = 5,
+				top = 5,
+				bottom = 5,
+			}
+		})
+		self.__border:SetBackdropColor(0, 0, 0, 0.3)
+		self.__border:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+
+		self.__border = nil
+	end
+
 end
 
 function C:RefreshData()
@@ -298,6 +317,7 @@ local function MoveSeparator(self)
 end
 
 local function UpdateRightSide(self)
+
 	local elements_row = floor(self:GetWidth())
 	local elements_num = floor(self:GetHeight())
 
@@ -797,25 +817,7 @@ function C:GetMainFrame()
 	rightSide:SetPoint("LEFT", separator, "RIGHT", 5, 0)
 	rightSide.elements = {}
 	rightSide:SetScript("OnSizeChanged", UpdateRightSide)	
-	
-	local rightSide_border = CreateFrame("Frame", nil, rightSide,BackdropTemplateMixin and 'BackdropTemplate')
-	rightSide_border:SetFrameLevel(rightSide:GetFrameLevel()-1)
-	rightSide_border:SetPoint("TOPLEFT", rightSide, "TOPLEFT", -5, 5)
-	rightSide_border:SetPoint("BOTTOMRIGHT", rightSide, "BOTTOMRIGHT", 5, -5)
-	rightSide_border:SetBackdrop({
-		bgFile = [[Interface\Buttons\WHITE8x8]],
-		edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
-		edgeSize = 16,
-		insets = {
-			left = 5,
-			right = 5,
-			top = 5,
-			bottom = 5,
-		}
-	})
-	rightSide_border:SetBackdropColor(0, 0, 0, 0.3)
-	rightSide_border:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-	
+
 	rightSide.slider = CreateFrame("ScrollFrame",nil, rightSide)
 	rightSide.slider:SetFrameLevel(rightSide:GetFrameLevel() + 1)
 	rightSide.slider:EnableMouse(true)
@@ -864,6 +866,15 @@ function C:GetMainFrame()
 	
 --	AddBorders(rightSide, rightSide_bg)
 	
+
+	local rightSide_border = CreateFrame("Frame", nil, rightSide, BackdropTemplateMixin and 'BackdropTemplate')
+	rightSide_border:SetFrameLevel(rightSide:GetFrameLevel()-1)
+	rightSide_border:SetSize(1,1)
+	rightSide_border:SetPoint("TOPLEFT", rightSide, "TOPLEFT", -5, 5)
+	rightSide_border:SetPoint("BOTTOMRIGHT", rightSide, "BOTTOMRIGHT", 5, -5)
+
+	rightSide.__border = rightSide_border
+
 	f.leftSide = leftSide
 	f.rightSide = rightSide
 	
