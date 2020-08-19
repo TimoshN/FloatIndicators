@@ -313,7 +313,7 @@ local function createDropdownPanel(index)
 		end
 	end
 	
-	frame.border1 = CreateFrame("Frame", nil, frame)
+	frame.border1 = CreateFrame("Frame", nil, frame,BackdropTemplateMixin and 'BackdropTemplate')
 	frame.border1:SetPoint("TOPLEFT", frame, "TOPLEFT", -10, 10)
 	frame.border1:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 10, -10)
 	frame.border1:SetBackdrop({

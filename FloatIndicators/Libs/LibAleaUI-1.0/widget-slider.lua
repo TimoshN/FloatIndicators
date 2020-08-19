@@ -211,7 +211,7 @@ local function CreateCoreButton(parent)
 	f.mintext:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -2)
 	f.maxtext:SetPoint("TOPRIGHT", f, "BOTTOMRIGHT", 0, -2)
 	
-	f.editbox = CreateFrame("EditBox", nil, f)
+	f.editbox = CreateFrame("EditBox", nil, f,BackdropTemplateMixin and 'BackdropTemplate')
 --	f.editbox:SetFont("Fonts\\ARIALN.TTF", 14, "OUTLINE")
 	f.editbox:SetFontObject('ChatFontNormal')
 	f.editbox.myslider = f

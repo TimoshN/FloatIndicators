@@ -135,7 +135,7 @@ local function CreateCoreDropDown(parent)
 	value:SetJustifyH("RIGHT")
 	value:SetWordWrap(false)
 	
-	local borderex = CreateFrame("Frame", nil, f)
+	local borderex = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 	borderex:SetSize(42, 42)
 	borderex:SetPoint("RIGHT", f, "LEFT", 0, 5)
 	borderex:SetBackdrop({

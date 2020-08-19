@@ -225,7 +225,7 @@ do
 		
 		local pf = CreateFrame("Frame", nil, parent)
 	
-		local bg_border = CreateFrame("Frame", nil, pf)
+		local bg_border = CreateFrame("Frame", nil, pf, BackdropTemplateMixin and 'BackdropTemplate')
 		bg_border:SetFrameLevel(pf:GetFrameLevel()+1)
 		bg_border:SetPoint("TOPLEFT", pf, "TOPLEFT", -3, 3)
 		bg_border:SetPoint("BOTTOMRIGHT", pf, "BOTTOMRIGHT", 3, -3)

@@ -6,6 +6,9 @@ local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or SendAddon
 
 --[==[
 	Change log
+	v84
+		Backdrops
+		
 	v83
 		еще пропажа с PlaySound
 		

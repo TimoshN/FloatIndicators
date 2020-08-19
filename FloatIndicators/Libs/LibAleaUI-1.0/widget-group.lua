@@ -217,14 +217,14 @@ function C:CreateGroup()
 --		edgeSize = 1,
 --		insets = {top = 0, left = 0, bottom = 0, right = 0},
 --		})
---	bg:SetBackdropColor(0, 0, 0, 0.4) --цвет фона
---	bg:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --цвет краев
+--	bg:SetBackdropColor(0, 0, 0, 0.4) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+--	bg:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	
 	bg:SetPoint("TOPLEFT", f.main, "TOPLEFT", 0, -5)
 	bg:SetPoint("BOTTOM", f, "BOTTOM", 0, 0)
 	bg:SetPoint("RIGHT", f.main, "RIGHT", 0, 0)
 		
-	local bg_border = CreateFrame("Frame", nil, f)
+	local bg_border = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 	bg_border:SetFrameLevel(f:GetFrameLevel()+1)
 	bg_border:SetPoint("TOPLEFT", f, "TOPLEFT", -0,-16)
 	bg_border:SetPoint("BOTTOMRIGHT", bg, "BOTTOMRIGHT", 0, 3)

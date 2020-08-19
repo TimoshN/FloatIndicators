@@ -136,7 +136,7 @@ end
 DD.dropdown:SetHeight(BUTTON_HEIGHT*NUM_BUTTONS)
 DD.dropdown.Update = function(self)end
 DD.dropdown:SetClampedToScreen(true)
-DD.dropdown.border1 = CreateFrame("Frame", nil, DD.dropdown)
+DD.dropdown.border1 = CreateFrame("Frame", nil, DD.dropdown, BackdropTemplateMixin and 'BackdropTemplate')
 DD.dropdown.border1:SetPoint("TOPLEFT", DD.dropdown, "TOPLEFT", -10, 10)
 DD.dropdown.border1:SetPoint("BOTTOMRIGHT", DD.dropdown, "BOTTOMRIGHT", 10, -10)
 DD.dropdown.border1:SetBackdrop({

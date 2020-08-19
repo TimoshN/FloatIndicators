@@ -441,7 +441,7 @@ function C:CreateTabGroup()
 	bg:SetPoint("BOTTOM", f, "BOTTOM", 0, 0)
 	bg:SetPoint("RIGHT", f.main, "RIGHT", 5, 0)
 	
-	local bg_border = CreateFrame("Frame", nil, f)
+	local bg_border = CreateFrame("Frame", nil, f, BackdropTemplateMixin and 'BackdropTemplate')
 	bg_border:SetFrameLevel(f:GetFrameLevel()+1)
 	bg_border:SetPoint("TOPLEFT", f.main, "TOPLEFT", -5, 2)
 	bg_border:SetPoint("BOTTOMRIGHT", bg, "BOTTOMRIGHT", 0, 3)

@@ -5,7 +5,7 @@ C.colorFrames = {}
 
 local current
 
-local customColorPicker = _G['AleaUIGUI-ColorPickerFrame'] or CreateFrame('Frame', 'AleaUIGUI-ColorPickerFrame', UIParent)
+local customColorPicker = _G['AleaUIGUI-ColorPickerFrame'] or CreateFrame('Frame', 'AleaUIGUI-ColorPickerFrame', UIParent, BackdropTemplateMixin and 'BackdropTemplate')
 customColorPicker:SetFrameStrata('FULLSCREEN_DIALOG')
 customColorPicker:SetSize(300, 200)
 customColorPicker:SetPoint("CENTER")
@@ -87,7 +87,7 @@ okeybutton:SetScript('OnClick', function()
 	
 	
 	current._OnClick(_, newR, newG, newB,newA)
-	current:SetBackdropColor(newR, newG, newB,newA or 1) --цвет фона
+	current:SetBackdropColor(newR, newG, newB,newA or 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	
 	C:GetRealParent(current):RefreshData()
 	
@@ -310,7 +310,7 @@ alphaScrollText:SetFontObject('ChatFontNormal') --:SetFont(STANDARD_TEXT_FONT, 1
 alphaScrollText:SetText('Alpha')
 alphaScrollText:SetPoint('BOTTOM', alphaScroll, 'TOP')
 
-alphaScroll.editbox = CreateFrame("EditBox", nil, alphaScroll)
+alphaScroll.editbox = CreateFrame("EditBox", nil, alphaScroll, BackdropTemplateMixin and 'BackdropTemplate')
 alphaScroll.editbox:SetFontObject('ChatFontNormal')
 alphaScroll.editbox:SetFrameLevel(alphaScroll:GetFrameLevel() + 1)
 alphaScroll.editbox:SetAutoFocus(false)
@@ -325,8 +325,8 @@ alphaScroll.editbox:SetBackdrop({
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-alphaScroll.editbox:SetBackdropColor(0 , 0 , 0 , 1) --цвет фона
-alphaScroll.editbox:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --цвет краев
+alphaScroll.editbox:SetBackdropColor(0 , 0 , 0 , 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+alphaScroll.editbox:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		
 alphaScroll.editbox:SetScript("OnEnterPressed", function(self)
 	local val = tonumber(self:GetText())
@@ -345,7 +345,7 @@ alphaScroll.editbox:SetScript("OnEscapePressed", function(self)
 	self:ClearFocus()
 end)
 
-alphaScroll._plus = CreateFrame("Button", nil, alphaScroll)
+alphaScroll._plus = CreateFrame("Button", nil, alphaScroll, BackdropTemplateMixin and 'BackdropTemplate')
 alphaScroll._plus:SetSize(14, 14)
 alphaScroll._plus:SetPoint("LEFT", alphaScroll.editbox, "RIGHT", 3, 0)
 alphaScroll._plus:SetBackdrop({
@@ -354,8 +354,8 @@ alphaScroll._plus:SetBackdrop({
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-alphaScroll._plus:SetBackdropColor(0 , 0 , 0 , 1) --цвет фона
-alphaScroll._plus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --цвет краев
+alphaScroll._plus:SetBackdropColor(0 , 0 , 0 , 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+alphaScroll._plus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 alphaScroll._plus.text = alphaScroll._plus:CreateFontString(nil, "OVERLAY")
 alphaScroll._plus.text:SetPoint("CENTER")
 alphaScroll._plus.text:SetFontObject('ChatFontNormal') --:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
@@ -365,7 +365,7 @@ alphaScroll._plus:SetScript("OnClick", function(self)
 end)
 alphaScroll._plus.text:SetWordWrap(false)
 
-alphaScroll._minus = CreateFrame("Button", nil, alphaScroll)
+alphaScroll._minus = CreateFrame("Button", nil, alphaScroll, BackdropTemplateMixin and 'BackdropTemplate')
 alphaScroll._minus:SetSize(14, 14)
 alphaScroll._minus:SetPoint("RIGHT", alphaScroll.editbox, "LEFT", -3, 0)
 alphaScroll._minus:SetBackdrop({
@@ -374,8 +374,8 @@ alphaScroll._minus:SetBackdrop({
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-alphaScroll._minus:SetBackdropColor(0 , 0 , 0 , 1) --цвет фона
-alphaScroll._minus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --цвет краев
+alphaScroll._minus:SetBackdropColor(0 , 0 , 0 , 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+alphaScroll._minus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 alphaScroll._minus.text = alphaScroll._minus:CreateFontString(nil, "OVERLAY")
 alphaScroll._minus.text:SetPoint("CENTER")
 alphaScroll._minus.text:SetFontObject('ChatFontNormal') --:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
@@ -505,7 +505,7 @@ local function UpdateColor(self, opts)
 end
 
 local function CreateCoreButton(parent)
-	local f = CreateFrame('Button', nil, parent) --"UICheckButtonTemplate"
+	local f = CreateFrame('Button', nil, parent, BackdropTemplateMixin and 'BackdropTemplate') --"UICheckButtonTemplate"
 
 	f:SetFrameLevel(parent:GetFrameLevel() + 1)
 	f:SetSize(21, 21)
@@ -543,14 +543,14 @@ local function CreateCoreButton(parent)
 		edgeSize = 2,
 		insets = {top = 0, left = 0, bottom = 0, right = 0},
 		})
-	f:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --цвет краев
+	f:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	
 	f:SetScript("OnEnter", function(self)
-		self:SetBackdropBorderColor(unpack(C.button_border_color_onup)) --цвет краев		
+		self:SetBackdropBorderColor(unpack(C.button_border_color_onup)) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ		
 		C.Tooltip(self, self._rname, self.desc, "show")
 	end)
 	f:SetScript("OnLeave", function(self)
-		self:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --цвет краев
+		self:SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		C.Tooltip(self, self._rname, self.desc, "hide")
 	end)
 	
@@ -577,11 +577,11 @@ local function CreateCoreButton(parent)
 	f.mouseover:SetPoint("TOPLEFT", text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)
---		self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_onup)) --цвет краев		
+--		self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_onup)) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ		
 		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
---		self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --цвет краев
+--		self:GetParent():SetBackdropBorderColor(unpack(C.button_border_color_ondown)) --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	
 		C.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
