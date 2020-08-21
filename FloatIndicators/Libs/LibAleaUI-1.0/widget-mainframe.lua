@@ -13,9 +13,8 @@ local versionStr, internalVersion, dateofpatch, uiVersion = GetBuildInfo(); inte
 C.wowbuild = internalVersion
 C.uibuild	= tonumber(uiVersion)
 
-if C.uibuild >= 70000 then
-	C.IsLegion	= true
-end
+C.IsLegion	= C.uibuild >= 70000
+C.isClassic = C.uibuild < 20000
 
 C.mainFrames = {}
 C.openedmainFrames = {}
