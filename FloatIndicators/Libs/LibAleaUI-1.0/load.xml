@@ -1,0 +1,23 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="widget-mainframe.lua"/>
+	<Script file="element-dropdown.lua"/>
+	<Script file="widget-button.lua"/>
+	<Script file="widget-checkbutton.lua"/>
+	<Script file="widget-color.lua"/>
+	<Script file="widget-dropdown.lua"/>
+	<Script file="widget-border.lua"/>
+	<Script file="widget-font.lua"/>
+	<Script file="widget-slider.lua"/>
+	<Script file="widget-string.lua"/>
+	<Script file="widget-tree.lua"/>
+	<Script file="widget-statusbar.lua"/>
+	<Script file="widget-group.lua"/>
+	<Script file="widget-editbox.lua"/>
+	<Script file="widget-sound.lua"/>
+	<Script file="widget-multidropdown.lua"/>
+	<Script file="widget-tabs.lua"/>
+	<Script file="core.lua"/>
+</Ui>
