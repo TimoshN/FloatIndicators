@@ -102,11 +102,7 @@ dropdownFrame = CreateFrame("Frame",  "AleaUIGUIFontDropDownFrame"..ns:GetNumFra
 dropdownFrame:SetSize(300, 200)
 dropdownFrame.bg = dropdownFrame:CreateTexture()
 dropdownFrame.bg:SetAllPoints()
-if ns.IsLegion then
-	dropdownFrame.bg:SetColorTexture(0, 0,0, 0.8)
-else
-	dropdownFrame.bg:SetTexture(0, 0,0, 0.8)
-end
+dropdownFrame.bg:SetColorTexture(0, 0,0, 0.8)
 dropdownFrame:SetHeight(BUTTON_HEIGHT*NUM_BUTTONS)
 dropdownFrame.Update = function(self)end
 

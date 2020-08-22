@@ -295,11 +295,7 @@ local function createDropdownPanel(index)
 	frame.sliderIndicator = frame:CreateTexture(nil, 'OVERLAY')
 	frame.sliderIndicator.parent = frame
 	frame.sliderIndicator:SetSize(2, 100)
-	if ns.IsLegion then
-		frame.sliderIndicator:SetColorTexture(0.5,0.5,0.5,1)
-	else
-		frame.sliderIndicator:SetTexture(0.5,0.5,0.5,1)
-	end
+	frame.sliderIndicator:SetColorTexture(0.5,0.5,0.5,1)
 	
 	frame.sliderIndicator:SetPoint('TOPRIGHT', frame, 'TOPRIGHT', -1, -1)
 	frame.sliderIndicator.SetPosition = function(self, from, to, maxV)		

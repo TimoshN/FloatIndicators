@@ -13,7 +13,6 @@ local versionStr, internalVersion, dateofpatch, uiVersion = GetBuildInfo(); inte
 ns.wowbuild = internalVersion
 ns.uibuild	= tonumber(uiVersion)
 
-ns.IsLegion	= ns.uibuild >= 70000
 ns.isClassic = ns.uibuild < 20000
 
 ns.mainFrames = {}
@@ -278,7 +277,7 @@ function ns:Update(addonName)
 				bottom = 5,
 			}
 		})
-		self.rightSide.__border:SetBackdropColor(0, 0, 0, 0.3)
+		self.rightSide.__border:SetBackdropColor(0, 0, 0, 0.5)
 		self.rightSide.__border:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 
 		self.rightSide.__border = false
@@ -295,12 +294,7 @@ function ns:RefreshData()
 end
 
 local function MoveSeparator(self)
-	if ns.IsLegion then
-		self.bg:SetColorTexture(0.4, 0.4, 0.4, 1)
-	else
-		self.bg:SetTexture(0.4, 0.4, 0.4, 1)
-	end
-	
+	self.bg:SetColorTexture(0.4, 0.4, 0.4, 1)
 	self:SetRelPoint(GetCursorPosition()/self:GetEffectiveScale()-self:GetParent():GetLeft())
 end
 
@@ -579,12 +573,8 @@ function ns:GetMainFrame()
 	bg:SetPoint("TOPLEFT", f, "TOPLEFT", -10, 10)
 	bg:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 10, -30)
 	
-	if ns.IsLegion then
-		bg:SetColorTexture(ns.main_bg_color[1],ns.main_bg_color[2],ns.main_bg_color[3],ns.main_bg_color[4])
-	else
-		bg:SetTexture(ns.main_bg_color[1],ns.main_bg_color[2],ns.main_bg_color[3],ns.main_bg_color[4])
-	end
-	
+	bg:SetColorTexture(ns.main_bg_color[1],ns.main_bg_color[2],ns.main_bg_color[3],ns.main_bg_color[4])
+
 	local f_border = CreateFrame("Frame", nil, f,BackdropTemplateMixin and 'BackdropTemplate')
 	f_border:SetPoint("TOPLEFT", f, "TOPLEFT", -15, 15)
 	f_border:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 15, -35)
@@ -707,45 +697,22 @@ function ns:GetMainFrame()
 	--	self:SetScript("OnUpdate", MoveSeparator)
 	end)
 	separator:SetScript("OnDragStop", function(self)
-		if ns.IsLegion then
-			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
-		else
-			self.bg:SetTexture(0.4, 0.4, 0.4, 0)
-		end
-		
-		self:SetScript("OnUpdate", nil)
-		
+		self.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
+		self:SetScript("OnUpdate", nil)	
 		self:GetParent():RefreshData()	
 	end)
 	separator:SetScript("OnEnter", function(self)
-		if ns.IsLegion then
-			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0.8)
-		else
-			self.bg:SetTexture(0.4, 0.4, 0.4, 0.8)
-		end
+		self.bg:SetColorTexture(0.4, 0.4, 0.4, 0.8)
 	end)
 	separator:SetScript("OnLeave", function(self)
-		if ns.IsLegion then
-			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
-		else
-			self.bg:SetTexture(0.4, 0.4, 0.4, 0)
-		end
+		self.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
 	end)
 	separator:SetScript("OnMouseUp", function(self)
-		if ns.IsLegion then
-			self.bg:SetColorTexture(0.4, 0.4, 0.4, 1)
-		else
-			self.bg:SetTexture(0.4, 0.4, 0.4, 1)
-		end
+		self.bg:SetColorTexture(0.4, 0.4, 0.4, 1)
 		self:SetScript("OnUpdate", nil)
 	end)
 	separator:SetScript("OnMouseDown", function(self)
-		if ns.IsLegion then
-			self.bg:SetColorTexture(0.4, 0.4, 0.4, 0.8)
-		else
-			self.bg:SetTexture(0.4, 0.4, 0.4, 0.8)
-		end
-		
+		self.bg:SetColorTexture(0.4, 0.4, 0.4, 0.8)
 		self:SetScript("OnUpdate", MoveSeparator)
 	end)
 	
@@ -762,12 +729,7 @@ function ns:GetMainFrame()
 	
 	separator.bg  = separator:CreateTexture(nil, "BACKGROUND", nil, 0)
 	separator.bg:SetAllPoints()
-	if ns.IsLegion then
-		separator.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
-	else
-		separator.bg:SetTexture(0.4, 0.4, 0.4, 0)
-	end
-	
+	separator.bg:SetColorTexture(0.4, 0.4, 0.4, 0)
 	local leftSide = CreateFrame("Frame", nil, f)
 	leftSide:SetFrameLevel(f:GetFrameLevel()+1)
 	leftSide:SetPoint("TOPLEFT", f, "TOPLEFT", 10, -10)
@@ -796,7 +758,7 @@ function ns:GetMainFrame()
 			bottom = 5,
 		}
 	})
-	leftSide_border:SetBackdropColor(0, 0, 0, 0.3)
+	leftSide_border:SetBackdropColor(0, 0, 0, 0.5)
 	leftSide_border:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 	
 	local rightSide = CreateFrame("Frame", nil, f)
@@ -846,14 +808,8 @@ function ns:GetMainFrame()
 	local rightSide_bg = rightSide:CreateTexture(nil, "BACKGROUND", nil, 1)
 	rightSide_bg:SetAllPoints()
 	
-	if ns.IsLegion then
-		rightSide_bg:SetColorTexture(ns.main_bg_left_right_side_color[1], ns.main_bg_left_right_side_color[2], ns.main_bg_left_right_side_color[3], ns.main_bg_left_right_side_color[4])	
-	else
-		rightSide_bg:SetTexture(ns.main_bg_left_right_side_color[1], ns.main_bg_left_right_side_color[2], ns.main_bg_left_right_side_color[3], ns.main_bg_left_right_side_color[4])	
-	end
-	
---	AddBorders(rightSide, rightSide_bg)
-	
+	rightSide_bg:SetColorTexture(ns.main_bg_left_right_side_color[1], ns.main_bg_left_right_side_color[2], ns.main_bg_left_right_side_color[3], ns.main_bg_left_right_side_color[4])	
+
 
 	local rightSide_border = CreateFrame("Frame", nil, rightSide, BackdropTemplateMixin and 'BackdropTemplate')
 	rightSide_border:SetFrameLevel(rightSide:GetFrameLevel()-1)

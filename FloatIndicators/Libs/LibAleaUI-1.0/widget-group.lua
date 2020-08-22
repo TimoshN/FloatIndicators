@@ -209,17 +209,7 @@ function ns:CreateGroup()
 	f.main:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -15)
 	f.main:SetSize(200, 185)
 	
-	local bg = CreateFrame("Frame", nil, f) --f:CreateTexture(nil)
---	bg:EnableMouse(false)
---	bg:SetBackdrop({
---		bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
---		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], 
---		edgeSize = 1,
---		insets = {top = 0, left = 0, bottom = 0, right = 0},
---		})
---	bg:SetBackdropColor(0, 0, 0, 0.4) --���� ����
---	bg:SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
-	
+	local bg = CreateFrame("Frame", nil, f) 
 	bg:SetPoint("TOPLEFT", f.main, "TOPLEFT", 0, -5)
 	bg:SetPoint("BOTTOM", f, "BOTTOM", 0, 0)
 	bg:SetPoint("RIGHT", f.main, "RIGHT", 0, 0)
@@ -239,7 +229,7 @@ function ns:CreateGroup()
 			bottom = 5,
 		}
 	})
-	bg_border:SetBackdropColor(0, 0, 0, 0.3)
+	bg_border:SetBackdropColor(0, 0, 0, 0.5)
 	bg_border:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 	
 	local text = bg:CreateFontString(nil, 'OVERLAY', "GameFontHighlight")

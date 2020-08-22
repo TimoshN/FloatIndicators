@@ -652,7 +652,6 @@ end
 local h = CreateFrame("Frame")
 if ( not ns.isClassic ) then
 	h:RegisterEvent("PLAYER_TALENT_UPDATE")
-	print('RegisterEvent("PLAYER_TALENT_UPDATE")', ns.IsLegion )
 end
 h:SetScript("OnEvent", function(self, event)
 	self[event](self, event)
@@ -1160,31 +1159,30 @@ function ALEAUI_GetProfileOptions(db, singleSpec)
 		get = function() return L_DUALSPEC_DESC end
 	}
 	
-	
-	if ns.IsLegion then	
-		f.args.enableMultiSpecProfile = {
-			name = L_ENABLED,
-			desc = L_ENABLED_DESC,
-			
-			order = 1.8,
-			type = "toggle",
-			newLine = true,
-			func = function(self) 
-			
-				_G[db][cvarSettings] = not _G[db][cvarSettings] 
-				f.args.defSpecchoose.disabled = _G[db][cvarSettings];
-				
-				for i=1, GetNumSpecializations() do				
-					f.args['spec'..i..'choose'].disabled = not _G[db][cvarSettings];
-				end
-				
-				lastactivespec = -1
-				
-				RunSpecSwap()
-			end,
-			get = function(self) return _G[db][cvarSettings] end,
-		}
+	f.args.enableMultiSpecProfile = {
+		name = L_ENABLED,
+		desc = L_ENABLED_DESC,
 		
+		order = 1.8,
+		type = "toggle",
+		newLine = true,
+		func = function(self) 
+		
+			_G[db][cvarSettings] = not _G[db][cvarSettings] 
+			f.args.defSpecchoose.disabled = _G[db][cvarSettings];
+			
+			for i=1, GetNumSpecializations() do				
+				f.args['spec'..i..'choose'].disabled = not _G[db][cvarSettings];
+			end
+			
+			lastactivespec = -1
+			
+			RunSpecSwap()
+		end,
+		get = function(self) return _G[db][cvarSettings] end,
+	}
+	
+	if ( not ns.isClassic ) then 
 		if GetNumSpecializations() == 0 then
 			local handler = CreateFrame('Frame')
 			handler:RegisterEvent("PLAYER_TALENT_UPDATE")
@@ -1212,7 +1210,7 @@ function ALEAUI_GetProfileOptions(db, singleSpec)
 						end,
 					}
 				end
-	
+
 				f.args.defSpecchoose.disabled = _G[db][cvarSettings];
 
 				handler:UnregisterAllEvents()
@@ -1239,42 +1237,6 @@ function ALEAUI_GetProfileOptions(db, singleSpec)
 		
 			f.args.defSpecchoose.disabled = _G[db][cvarSettings];
 		end
-	else
-		f.args.enabledual = {
-			name = L_ENABLED,
-			desc = L_ENABLED_DESC,
-			order = 1.8,
-			type = "toggle",
-			newLine = true,
-			func = function(self) 
-			
-				_G[db][cvarSettings] = not _G[db][cvarSettings] 
-				f.args.spec2choose.disabled = not _G[db][cvarSettings];
-				
-				lastactivespec = -1
-				
-				RunSpecSwap()
-			end,
-			get = function(self) return _G[db][cvarSettings] end,
-		}
-	
-		f.args.spec2choose = {					
-			name = L_DUAL_PROFILE, 
-			desc = L_DUAL_PROFILE_DESC,
-			disabled = not _G[db][cvarSettings],
-			order = 1.9,
-			type = "dropdown",
-			values = GetProfileInterator(db, 2),
-			set = function(self, value)
-				if _G[db][cvarSettings] then
-					ChangeProfile(db, 2, value)	
-				end
-			end,
-			get = function(self) 
-				return _G[db].profileKeys[profileOwner][2]
-			end,
-		
-		}
 	end
 	
 	f.args.copydesc = {
@@ -1529,7 +1491,7 @@ do
 	local func = function()
 		old_print('--------------------------')
 		old_print('----- AleaUI 1.0 -------')
-		old_print('---- aleaaddons.ru ---')
+		old_print('---- aleaaddons.ru ----')
 		old_print('LibOwner:', libOwner)
 		old_print('--------------------------')
 		old_print('Usade in:')

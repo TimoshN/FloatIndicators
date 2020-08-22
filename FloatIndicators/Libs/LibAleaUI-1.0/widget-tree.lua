@@ -75,26 +75,8 @@ function ns:GetTreeGroupElement(parent, main)
 			
 		ns.openedmainFrames[self:GetParent():GetParent():GetParent():GetParent():GetParent().addon]:Update(self:GetParent():GetParent():GetParent():GetParent():GetParent().addon)
 	end)
-	--[==[
-	f.exp.bg = f.exp:CreateTexture(nil, "ARTWORK")
-	f.exp.bg:SetAllPoints()
-	if ns.IsLegion then
-		f.exp.bg:SetColorTexture(1,0,0,1)
-	else
-		f.exp.bg:SetTexture(1,0,0,1)
-	end
-
-	f.exp.text = f.exp:CreateFontString(nil, "OVERLAY")
-	f.exp.text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE")
-	f.exp.text:SetJustifyH("CENTER")
-	f.exp.text:SetText("+")
-	f.exp.text:SetPoint("TOPLEFT", f.exp, "TOPLEFT", -4, 4)
-	f.exp.text:SetPoint("BOTTOMRIGHT", f.exp, "BOTTOMRIGHT", 4, -4)
-	f.exp.text:SetWordWrap(false)
-	]==]
 	
 	local text = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	--text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 	text:SetJustifyH("LEFT")
 	text:SetText("TEST")
 	text:SetPoint("LEFT", f, "LEFT", 3, 0)
@@ -102,10 +84,7 @@ function ns:GetTreeGroupElement(parent, main)
 	text:SetWordWrap(false)
 	
 	f.mouseup = f:CreateTexture()
---	f.mouseup:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")	
---	f.mouseup:SetTexture("Interface\\Buttons\\UI-Listbox-Highlight2")
-
-	f.mouseup:SetTexture("Interface\\Buttons\\UI-Common-MouseHilight") --"Interface\\Buttons\\UI-PlusButton-Hilight") --"Interface\\Buttons\\UI-Common-MouseHilight")
+	f.mouseup:SetTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 	f.mouseup:SetBlendMode("ADD")
 	f.mouseup:SetPoint("LEFT", parent.buttonParent, "LEFT", -50, 0)
 	f.mouseup:SetTexCoord(0,1,0.35,0.65)

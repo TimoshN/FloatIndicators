@@ -128,11 +128,7 @@ DD.dropdown = CreateFrame("Frame")
 DD.dropdown:SetSize(300, 200)
 DD.dropdown.bg = DD.dropdown:CreateTexture()
 DD.dropdown.bg:SetAllPoints()
-if ns.IsLegion then 
-	DD.dropdown.bg:SetColorTexture(0, 0,0, 0.8)
-else
-	DD.dropdown.bg:SetTexture(0, 0,0, 0.8)
-end
+DD.dropdown.bg:SetColorTexture(0, 0,0, 0.8)
 DD.dropdown:SetHeight(BUTTON_HEIGHT*NUM_BUTTONS)
 DD.dropdown.Update = function(self)end
 DD.dropdown:SetClampedToScreen(true)
@@ -150,7 +146,7 @@ DD.dropdown.border1:SetBackdrop({
 		bottom = 5,
 	}
 })
-DD.dropdown.border1:SetBackdropColor(0, 0, 0, 1)
+DD.dropdown.border1:SetBackdropColor(0, 0, 0, 0.8)
 DD.dropdown.border1:SetBackdropBorderColor(1, 1, 1, 1)
 	
 DD.dropdown.border = CreateFrame("Frame", nil, DD.dropdown)
@@ -194,12 +190,7 @@ DD.scrollFrame.ScrollBar:GetThumbTexture():SetDrawLayer("OVERLAY", 1)
 DD.scrollFrame.ScrollBar:SetFrameLevel(DD.scrollFrame:GetFrameLevel()+2)
 DD.scrollFrame.ScrollBar.bg = DD.scrollFrame.ScrollBar:CreateTexture(nil, "OVERLAY")
 DD.scrollFrame.ScrollBar.bg:SetAllPoints()
-if ns.IsLegion then 
 DD.scrollFrame.ScrollBar.bg:SetColorTexture(0, 0, 0, 0.6)
-else
-DD.scrollFrame.ScrollBar.bg:SetTexture(0, 0, 0, 0.6)
-end
-
 DD.scrollFrame:SetScript("OnMouseWheel", function(self, delta)
 	local reduce = self.scroll-( BUTTON_HEIGHT * delta)
 

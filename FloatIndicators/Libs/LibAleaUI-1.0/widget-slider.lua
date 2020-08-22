@@ -223,11 +223,11 @@ local function CreateCoreButton(parent)
 	f.editbox:SetJustifyV("Center")
 
 	f.editbox:SetBackdrop({
-		bgFile = [[Interface\Buttons\WHITE8x8]] , --[=[Interface\ChatFrame\ChatFrameBackground]=]
-		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], --[=[Interface\ChatFrame\ChatFrameBackground]=]
+		bgFile = [[Interface\Buttons\WHITE8x8]],
+		edgeFile = [[Interface\ChatFrame\ChatFrameBackground]],
 		edgeSize = 1,
 		insets = {top = 0, left = 0, bottom = 0, right = 0},
-		})
+	})
 	f.editbox:SetBackdropColor(0 , 0 , 0 , 1) --цвет фона
 	f.editbox:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --цвет краев
 			
@@ -250,22 +250,7 @@ local function CreateCoreButton(parent)
 	f._plus:SetPoint("LEFT", f.editbox, "RIGHT", 3, 0)
 	f._plus:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP")
 	f._plus:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN")
-				
-	--[==[
-	f._plus:SetBackdrop({
-		bgFile = [[Interface\Buttons\WHITE8x8]],
-		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeSize = 1,
-		insets = {top = 0, left = 0, bottom = 0, right = 0},
-		})
-	f._plus:SetBackdropColor(0 , 0 , 0 , 1) --цвет фона
-	f._plus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --цвет краев
-	
-	f._plus.text = f._plus:CreateFontString(nil, "OVERLAY")
-	f._plus.text:SetPoint("CENTER")
-	f._plus.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-	f._plus.text:SetText("+")
-	--]==]
+
 	f._plus:SetScript("OnClick", function(self)
 		
 		local minVal, maxVal = self:GetParent():GetMinMaxValues()
@@ -288,22 +273,7 @@ local function CreateCoreButton(parent)
 	f._minus:SetPoint("RIGHT", f.editbox, "LEFT", -3, 0)
 	f._minus:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-UP")
 	f._minus:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-DOWN")
-	
-	
-	--[==[
-	f._minus:SetBackdrop({
-		bgFile = [[Interface\Buttons\WHITE8x8]],
-		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeSize = 1,
-		insets = {top = 0, left = 0, bottom = 0, right = 0},
-		})
-	f._minus:SetBackdropColor(0 , 0 , 0 , 1) --цвет фона
-	f._minus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --цвет краев
-	f._minus.text = f._minus:CreateFontString(nil, "OVERLAY")
-	f._minus.text:SetPoint("CENTER")
-	f._minus.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-	f._minus.text:SetText("-")
-	]==]
+
 	f._minus:SetScript("OnClick", function(self)
 	
 		local minVal, maxVal = self:GetParent():GetMinMaxValues()

@@ -326,8 +326,8 @@ alphaScroll.editbox:SetBackdrop({
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-alphaScroll.editbox:SetBackdropColor(0 , 0 , 0 , 1) --���� ����
-alphaScroll.editbox:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --���� �����
+alphaScroll.editbox:SetBackdropColor(0,0,0,1)
+alphaScroll.editbox:SetBackdropBorderColor(0.2,0.2,0.2,1)
 		
 alphaScroll.editbox:SetScript("OnEnterPressed", function(self)
 	local val = tonumber(self:GetText())
@@ -355,8 +355,8 @@ alphaScroll._plus:SetBackdrop({
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-alphaScroll._plus:SetBackdropColor(0 , 0 , 0 , 1) --���� ����
-alphaScroll._plus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --���� �����
+alphaScroll._plus:SetBackdropColor(0,0,0,1)
+alphaScroll._plus:SetBackdropBorderColor(0.2,0.2,0.2,1)
 alphaScroll._plus.text = alphaScroll._plus:CreateFontString(nil, "OVERLAY")
 alphaScroll._plus.text:SetPoint("CENTER")
 alphaScroll._plus.text:SetFontObject('ChatFontNormal') --:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
@@ -370,13 +370,13 @@ alphaScroll._minus = CreateFrame("Button", nil, alphaScroll, BackdropTemplateMix
 alphaScroll._minus:SetSize(14, 14)
 alphaScroll._minus:SetPoint("RIGHT", alphaScroll.editbox, "LEFT", -3, 0)
 alphaScroll._minus:SetBackdrop({
-	bgFile = [[Interface\Buttons\WHITE8x8]] , --[=[Interface\ChatFrame\ChatFrameBackground]=]
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], --[=[Interface\ChatFrame\ChatFrameBackground]=]
+	bgFile = [[Interface\Buttons\WHITE8x8]] ,
+	edgeFile = [[Interface\Buttons\WHITE8x8]],
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
-	})
-alphaScroll._minus:SetBackdropColor(0 , 0 , 0 , 1) --���� ����
-alphaScroll._minus:SetBackdropBorderColor(0.2 , 0.2 , 0.2 , 1) --���� �����
+})
+alphaScroll._minus:SetBackdropColor(0,0,0,1)
+alphaScroll._minus:SetBackdropBorderColor(0.2,0.2,0.2,1)
 alphaScroll._minus.text = alphaScroll._minus:CreateFontString(nil, "OVERLAY")
 alphaScroll._minus.text:SetPoint("CENTER")
 alphaScroll._minus.text:SetFontObject('ChatFontNormal') --:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
@@ -498,11 +498,7 @@ local function UpdateColor(self, opts)
 	g = g or 1
 	b = b or 1
 	
-	if ns.IsLegion then
-		self.main.texture:SetColorTexture(r,g,b, self.main.hasAlpha and ( a or 1 ) or 1)
-	else
-		self.main.texture:SetTexture(r,g,b, self.main.hasAlpha and ( a or 1 ) or 1)
-	end
+	self.main.texture:SetColorTexture(r,g,b, self.main.hasAlpha and ( a or 1 ) or 1)
 end
 
 local function CreateCoreButton(parent)
@@ -520,11 +516,7 @@ local function CreateCoreButton(parent)
 	local texture = f:CreateTexture(nil, "BACKGROUND", 0)
 	texture:SetWidth(13)
 	texture:SetHeight(13)
-	if ns.IsLegion then
-		texture:SetColorTexture(1, 1, 1)
-	else
-		texture:SetTexture(1, 1, 1)
-	end
+	texture:SetColorTexture(1, 1, 1)
 	texture:SetPoint("CENTER", colorSwatch)
 	texture:Show()
 	
@@ -540,18 +532,18 @@ local function CreateCoreButton(parent)
 	
 	f:SetBackdrop({
 		bgFile = "",
-		edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], 
+		edgeFile = [[Interface\DialogFrame\UI-DialogBox-Background]], 
 		edgeSize = 2,
 		insets = {top = 0, left = 0, bottom = 0, right = 0},
-		})
-	f:SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
+	})
+	f:SetBackdropBorderColor(unpack(ns.button_border_color_ondown))
 	
 	f:SetScript("OnEnter", function(self)
-		self:SetBackdropBorderColor(unpack(ns.button_border_color_onup)) --���� �����		
+		self:SetBackdropBorderColor(unpack(ns.button_border_color_onup))
 		ns.Tooltip(self, self._rname, self.desc, "show")
 	end)
 	f:SetScript("OnLeave", function(self)
-		self:SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
+		self:SetBackdropBorderColor(unpack(ns.button_border_color_ondown))
 		ns.Tooltip(self, self._rname, self.desc, "hide")
 	end)
 	

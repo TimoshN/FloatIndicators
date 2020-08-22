@@ -240,7 +240,7 @@ do
 				bottom = 5,
 			}
 		})
-		bg_border:SetBackdropColor(0, 0, 0, 0.3)
+		bg_border:SetBackdropColor(0, 0, 0, 0.5)
 		bg_border:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
 	
 		pf.Scroll = CreateFrame("ScrollFrame", "AleaUIEditBoxMultiLineScrollFrame"..#ns.editboxFramesExtends+1, pf, "UIPanelScrollFrameTemplate")

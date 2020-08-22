@@ -103,11 +103,7 @@ dropdownFrame = CreateFrame("Frame",  "AleaUIGUISoundDropDownFrame"..ns:GetNumFr
 dropdownFrame:SetSize(300, 200)
 dropdownFrame.bg = dropdownFrame:CreateTexture()
 dropdownFrame.bg:SetAllPoints()
-if ns.IsLegion then
-	dropdownFrame.bg:SetColorTexture(0, 0,0, 0.8)
-else
-	dropdownFrame.bg:SetTexture(0, 0,0, 0.8)
-end
+dropdownFrame.bg:SetColorTexture(0, 0,0, 0.8)
 dropdownFrame:SetHeight(BUTTON_HEIGHT*NUM_BUTTONS)
 dropdownFrame.Update = function(self)end
 
@@ -150,12 +146,7 @@ dropdownFrame.scrollFrame.ScrollBar:GetThumbTexture():SetDrawLayer("OVERLAY", 1)
 dropdownFrame.scrollFrame.ScrollBar:SetFrameLevel(dropdownFrame.scrollFrame:GetFrameLevel()+2)
 dropdownFrame.scrollFrame.ScrollBar.bg = dropdownFrame.scrollFrame.ScrollBar:CreateTexture(nil, "OVERLAY")
 dropdownFrame.scrollFrame.ScrollBar.bg:SetAllPoints()
-
-if ns.IsLegion then
-	dropdownFrame.scrollFrame.ScrollBar.bg:SetColorTexture(0, 0, 0, 0)
-else
-	dropdownFrame.scrollFrame.ScrollBar.bg:SetTexture(0, 0, 0, 0)
-end
+dropdownFrame.scrollFrame.ScrollBar.bg:SetColorTexture(0, 0, 0, 0)
 
 dropdownFrame.scrollFrame:SetScript("OnMouseWheel", function(self, delta)
 	local reduce = self.scroll-( BUTTON_HEIGHT * delta)
