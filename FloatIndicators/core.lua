@@ -4,9 +4,6 @@ if FloatIndicators then
 	return
 end
 
-local IsAddonMessagePrefixRegistered = C_ChatInfo and C_ChatInfo.IsAddonMessagePrefixRegistered or IsAddonMessagePrefixRegistered
-local RegisterAddonMessagePrefix = C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix or RegisterAddonMessagePrefix
-local SendAddonMessage = C_ChatInfo and C_ChatInfo.SendAddonMessage or SendAddonMessage
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local defaults
@@ -1386,10 +1383,18 @@ ns.ADDON_SYNC_CHANNEL2 = ADDON_SYNC_CHANNEL2
 ns.ADDON_SYNC_CHANNEL3 = ADDON_SYNC_CHANNEL3
 ns.ADDON_SYNC_CHANNEL4 = ADDON_SYNC_CHANNEL4
 
-if not IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL1) then RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL1) end
-if not IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL2) then RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL2) end
-if not IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL3) then RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL3) end
-if not IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL4) then RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL4) end
+if not C_ChatInfo.IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL1) then 
+	C_ChatInfo.RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL1)
+end
+if not C_ChatInfo.IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL2) then 
+	C_ChatInfo.RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL2) 
+end
+if not C_ChatInfo.IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL3) then 
+	C_ChatInfo.RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL3) 
+end
+if not C_ChatInfo.IsAddonMessagePrefixRegistered(ADDON_SYNC_CHANNEL4) then 
+	C_ChatInfo.RegisterAddonMessagePrefix(ADDON_SYNC_CHANNEL4) 
+end
 
 
 local msgSendCache = {}
@@ -1432,7 +1437,7 @@ function SendMessage(msg, tag)
 	for i=1, numParts do
 		local msg = format(msgPartTag, i, numParts, msg:sub( (maxMsgLen*i)-maxMsgLen+1, ( i == numParts and msgLen or maxMsgLen*i)))
 		
-		SendAddonMessage(tag, msg, channel)
+		C_ChatInfo.SendAddonMessage(tag, msg, channel)
 	end
 end
 
@@ -2551,8 +2556,8 @@ end
 local versionChecker = {}
 local addonChannel = "FIVCH"
 
-if not IsAddonMessagePrefixRegistered(addonChannel) then
-	RegisterAddonMessagePrefix(addonChannel)
+if not C_ChatInfo.IsAddonMessagePrefixRegistered(addonChannel) then
+	C_ChatInfo.RegisterAddonMessagePrefix(addonChannel)
 end
 
 local events = CreateFrame("Frame")
@@ -3806,7 +3811,7 @@ function ns.printText(text, ...)
     local patterns = {"\n", "^.-AddOns\\", ": in function.*$"}
     local source = debugstack(2,1,0)
     for i = 1, #patterns do source = gsub(source, patterns[i], "") end
-    text = "FI: ["..source.." - print(\""..text.."\")"
+    text = "["..source.."] - \""..text.."\""
     return print(text)
 end
 
