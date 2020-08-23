@@ -296,12 +296,10 @@ local function CreateCoreButton(parent)
 	f.mouseover:SetSize(1,1)
 	f.mouseover:SetPoint("TOPLEFT", f.text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", f.text, "BOTTOMRIGHT", 3, -3)
-	f.mouseover:SetScript("OnEnter", function(self)
-	--	self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_onup)) --цвет краев		
+	f.mouseover:SetScript("OnEnter", function(self)	
 		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
-	--	self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --цвет краев	
 		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 

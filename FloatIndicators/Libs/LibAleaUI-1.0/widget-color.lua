@@ -325,7 +325,7 @@ alphaScroll.editbox:SetBackdrop({
 	edgeFile = [[Interface\Buttons\WHITE8x8]],
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
-	})
+})
 alphaScroll.editbox:SetBackdropColor(0,0,0,1)
 alphaScroll.editbox:SetBackdropBorderColor(0.2,0.2,0.2,1)
 		
@@ -354,7 +354,7 @@ alphaScroll._plus:SetBackdrop({
 	edgeFile = [[Interface\Buttons\WHITE8x8]],
 	edgeSize = 1,
 	insets = {top = 0, left = 0, bottom = 0, right = 0},
-	})
+})
 alphaScroll._plus:SetBackdropColor(0,0,0,1)
 alphaScroll._plus:SetBackdropBorderColor(0.2,0.2,0.2,1)
 alphaScroll._plus.text = alphaScroll._plus:CreateFontString(nil, "OVERLAY")
@@ -433,7 +433,7 @@ local function ShowColorPicker(r,g,b,a,showalpha, f)
 		end
 		
 		customColorPicker:SetSize(300, height)
-		C_Timer.After(0.5, function()
+		C_Timer.After(0.2, function()
 			colorselect:SetColorRGB(r,g,b)
 		end)
 	end
@@ -532,18 +532,18 @@ local function CreateCoreButton(parent)
 	
 	f:SetBackdrop({
 		bgFile = "",
-		edgeFile = [[Interface\DialogFrame\UI-DialogBox-Background]], 
+		edgeFile = [[Interface\Buttons\WHITE8x8]], 
 		edgeSize = 2,
 		insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-	f:SetBackdropBorderColor(unpack(ns.button_border_color_ondown))
+	f:SetBackdropBorderColor(0.7, 0.7, 0.7, 1)
 	
 	f:SetScript("OnEnter", function(self)
-		self:SetBackdropBorderColor(unpack(ns.button_border_color_onup))
+		self:SetBackdropBorderColor(1, 1, 1, 1)
 		ns.Tooltip(self, self._rname, self.desc, "show")
 	end)
 	f:SetScript("OnLeave", function(self)
-		self:SetBackdropBorderColor(unpack(ns.button_border_color_ondown))
+		self:SetBackdropBorderColor(0.7, 0.7, 0.7, 1)
 		ns.Tooltip(self, self._rname, self.desc, "hide")
 	end)
 	
@@ -559,7 +559,6 @@ local function CreateCoreButton(parent)
 
 	local text = f:CreateFontString(nil, 'OVERLAY', "GameFontHighlight")
 	text:SetPoint("LEFT", f, "RIGHT", 3 , 0)
---	text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 	text:SetTextColor(1, 1, 1)
 	text:SetJustifyH("LEFT")
 	text:SetWordWrap(false)
@@ -570,12 +569,9 @@ local function CreateCoreButton(parent)
 	f.mouseover:SetPoint("TOPLEFT", text, "TOPLEFT", -3, 3)
 	f.mouseover:SetPoint("BOTTOMRIGHT", text, "BOTTOMRIGHT", 3, -3)
 	f.mouseover:SetScript("OnEnter", function(self)
---		self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_onup)) --���� �����		
 		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "show")
 	end)
 	f.mouseover:SetScript("OnLeave", function(self)
---		self:GetParent():SetBackdropBorderColor(unpack(ns.button_border_color_ondown)) --���� �����
-	
 		ns.Tooltip(self, self:GetParent()._rname, self:GetParent().desc, "hide")
 	end)
 	
