@@ -149,7 +149,7 @@ DD.dropdown.border1:SetBackdrop({
 DD.dropdown.border1:SetBackdropColor(0, 0, 0, 0.8)
 DD.dropdown.border1:SetBackdropBorderColor(1, 1, 1, 1)
 	
-DD.dropdown.border = CreateFrame("Frame", nil, DD.dropdown)
+DD.dropdown.border = CreateFrame("Frame", nil, DD.dropdown, BackdropTemplateMixin and 'BackdropTemplate')
 DD.dropdown.border:SetPoint("TOPLEFT", DD.dropdown, "TOPLEFT", -10, 10)
 DD.dropdown.border:SetPoint("BOTTOMRIGHT", DD.dropdown, "BOTTOMRIGHT", 10, -10)
 DD.dropdown.updateBorder = function(self, texture)

@@ -409,6 +409,7 @@ local function ShowColorPicker(r,g,b,a,showalpha, f)
 		editBoxHex:SetText(format("%02x%02x%02x%02x", a and a*255 or 255, r*255, g*255, b*255))
 	
 		local realparent = ns:GetRealParent(f)
+		customColorPicker:ClearAllPoints()
 		customColorPicker:SetParent(realparent)
 		customColorPicker:SetFrameLevel(realparent:GetFrameLevel()+10)
 		
@@ -494,11 +495,13 @@ local function UpdateColor(self, opts)
 	
 	local r,g,b,a = opts.get()
 	
-	r = r or 1
-	g = g or 1
-	b = b or 1
+	r = r or 0
+	g = g or 0
+	b = b or 0
 	
-	self.main.texture:SetColorTexture(r,g,b, self.main.hasAlpha and ( a or 1 ) or 1)
+	local _a = self.main.hasAlpha and ( a or 1 ) or 1
+
+	self.main.texture:SetVertexColor(r,g,b,_a) --_a)
 end
 
 local function CreateCoreButton(parent)
@@ -507,27 +510,28 @@ local function CreateCoreButton(parent)
 	f:SetFrameLevel(parent:GetFrameLevel() + 1)
 	f:SetSize(21, 21)
 
-	local colorSwatch = f:CreateTexture(nil, "OVERLAY")
-	colorSwatch:SetWidth(16)
-	colorSwatch:SetHeight(16)
-	colorSwatch:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
-	colorSwatch:SetPoint("CENTER")
+	-- local colorSwatch = f:CreateTexture(nil, "OVERLAY")
+	-- colorSwatch:SetWidth(16)
+	-- colorSwatch:SetHeight(16)
+	-- colorSwatch:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
+	-- colorSwatch:SetPoint("CENTER")
 
-	local texture = f:CreateTexture(nil, "BACKGROUND", 0)
+	local texture = f:CreateTexture(nil, "OVERLAY", 5)
 	texture:SetWidth(13)
 	texture:SetHeight(13)
-	texture:SetColorTexture(1, 1, 1)
-	texture:SetPoint("CENTER", colorSwatch)
+	texture:SetTexture([[Interface\Buttons\WHITE8x8]])
+	texture:SetVertexColor(1, 1, 1, 1)
+	texture:SetPoint("CENTER")
 	texture:Show()
 	
-	local checkers = f:CreateTexture(nil, "BACKGROUND", -1)
+	local checkers = f:CreateTexture(nil, "ARTWORK", 1)
 	checkers:SetWidth(11)
 	checkers:SetHeight(11)
-	checkers:SetTexture("Tileset\\Generic\\Checkers")
+	checkers:SetTexture(188523) -- Tileset\\Generic\\Checkers
 	checkers:SetTexCoord(.25, 0, 0.5, .25)
---	checkers:SetDesaturated(true)
+	checkers:SetDesaturated(true)
 	checkers:SetVertexColor(1, 1, 1, 0.75)
-	checkers:SetPoint("CENTER", colorSwatch)
+	checkers:SetPoint("CENTER")
 	checkers:Show()
 	
 	f:SetBackdrop({
@@ -536,7 +540,7 @@ local function CreateCoreButton(parent)
 		edgeSize = 2,
 		insets = {top = 0, left = 0, bottom = 0, right = 0},
 	})
-	f:SetBackdropBorderColor(0.7, 0.7, 0.7, 1)
+	f:SetBackdropBorderColor(0.7,0.7,0.7,1)
 	
 	f:SetScript("OnEnter", function(self)
 		self:SetBackdropBorderColor(1, 1, 1, 1)
@@ -576,7 +580,7 @@ local function CreateCoreButton(parent)
 	end)
 	
 	f.text = text
-	f.texture = colorSwatch
+	f.texture = texture
 	
 	return f
 end
